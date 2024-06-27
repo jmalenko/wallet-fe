@@ -16,7 +16,7 @@ main {
   right: 0%;
 }
 
-#operator1,
+#operator,
 #rovnase {
   margin: 0 0.2em;
 }
@@ -25,6 +25,8 @@ main {
   color: #00f;
   border-bottom: 0.5vw dashed #00f;
   display: inline-block;
+  vertical-align: top;
+  height: 18vw;
   width: 1.2em;
 }
 
@@ -87,6 +89,22 @@ main {
     height: 7vw;
   }
 
+  #correct {
+    width: 34vw;
+    height: 34vw;
+    position: fixed;
+    left: 37vw;
+    top: 5vw;
+  }
+
+  #incorrect {
+    width: 34vw;
+    height: 34vw;
+    position: fixed;
+    left: 33vw;
+    top: -3vw;
+  }
+  
 }
 
 @media screen and (orientation: portrait) and (max-width: 800px) {
@@ -175,6 +193,22 @@ main {
   .icon {
     width: 20vw;
     height: 20vw;
+  }
+
+  #correct {
+    width: 34vw;
+    height: 34vw;
+    position: fixed;
+    left: 37vw;
+    top: 40vw;
+  }
+
+  #incorrect {
+    width: 34vw;
+    height: 34vw;
+    position: fixed;
+    left: 33vw;
+    top: 31vw;
   }
 
 }
