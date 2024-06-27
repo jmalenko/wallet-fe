@@ -2,21 +2,23 @@ import "./App.css";
 import { useState } from "react";
 
 export default function App() {
-  const [value, setValue] = useState("");
+  const EMPTY = "";
+  const MAX_LENGHT = 2;
+  const [value, setValue] = useState(EMPTY);
 
   function onAddDigit(digit) {
-    setValue(value + digit);
+    if (value.length < MAX_LENGHT) {
+      setValue(value + digit);
+    }
   }
 
-  function onSubmit() {
-  }
+  function onSubmit() {}
 
   function onDelete() {
-    setValue("");
+    setValue(EMPTY);
   }
 
-  function onShowMenu() {
-  }
+  function onShowMenu() {}
 
   return (
     <main>
@@ -95,5 +97,5 @@ function ButtonMenu({ onShowMenu }) {
       onClick={onShowMenu}
       src="images/menu_24dp_FILL0_wght400_GRAD0_opsz24.svg"
     ></img>
-  ); 
+  );
 }
