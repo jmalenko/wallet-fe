@@ -55,9 +55,6 @@ main {
 }
 
 .icon {
-  width: 7vw;
-  height: 7vw;
-
   border: 0.1vw solid #333333;
   border-radius: 0.5vw;
   background-color: #dddddd;
@@ -79,22 +76,22 @@ main {
     margin-right: 3vw;
   }
 
-#delete {
+  #delete {
     right: 3vw;
     bottom: 12vw;
     position: fixed;
   }
-  
+
+  .icon {
+    width: 7vw;
+    height: 7vw;
+  }
+
 }
 
 @media screen and (orientation: portrait) and (max-width: 800px) {
   main {
     font-size: 18vw;
-  }
-
-  object {
-    width: 20vw;
-    height: 20vw;
   }
 
   #zadani {
@@ -109,55 +106,55 @@ main {
     position: fixed;
   }
 
-  #n1 {
+  #tlacitka span:nth-child(1) {
     left: 17vw;
     transform: translate(0, -72vmin);
   }
 
-  #n2 {
+  #tlacitka span:nth-child(2) {
     left: 40vw;
     transform: translate(0, -72vmin);
   }
 
-  #n3 {
+  #tlacitka span:nth-child(3) {
     left: 63vw;
     transform: translate(0, -72vmin);
   }
 
 
-  #n4 {
+  #tlacitka span:nth-child(4) {
     left: 17vw;
     transform: translate(0, -49vmin);
   }
 
-  #n5 {
+  #tlacitka span:nth-child(5) {
     left: 40vw;
     transform: translate(0, -49vmin);
   }
 
-  #n6 {
+  #tlacitka span:nth-child(6) {
     left: 63vw;
     transform: translate(0, -49vmin);
   }
 
 
-  #n7 {
+  #tlacitka span:nth-child(7) {
     left: 17vw;
     transform: translate(0, -26vmin);
   }
 
-  #n8 {
+  #tlacitka span:nth-child(8) {
     left: 40vw;
     transform: translate(0, -26vmin);
   }
 
-  #n9 {
+  #tlacitka span:nth-child(9) {
     left: 63vw;
     transform: translate(0, -26vmin);
   }
 
 
-  #n0 {
+  #tlacitka span:nth-child(10) {
     left: 40vw;
     transform: translate(0, -3vmin);
   }
@@ -173,6 +170,11 @@ main {
     left: 3vw;
     bottom: 3vw;
     position: fixed;
+  }
+
+  .icon {
+    width: 20vw;
+    height: 20vw;
   }
 
 }
