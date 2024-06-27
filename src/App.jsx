@@ -77,6 +77,8 @@ export default function App() {
 
   function onShowMenu() {
     setMenuVisible(!menuVisible);
+    const element = document.getElementById("menuScreen")
+    element.style.visibility = menuVisible ? "visible" : "hidden"; 
   }
 
   return (
@@ -204,22 +206,36 @@ function MenuScreen({ isVisible, history }) {
       labels: xValues,
       datasets: [
         {
-          backgroundColor: "rgba(0,0,255,1.0)",
-          borderColor: "rgba(0,0,255,0.1)",
+          label: "Doba [s]",
           data: yValues,
+          backgroundColor: "rgba(0,255,0,1.0)",
+          borderColor: "rgba(0,255,0,0.1)",
+          borderWidth: 10,
           fill: false,
+          tension: 0.1,
+        },
+        {
+          label: "Počet chyb",
+          data: yValuesBar,
+          backgroundColor: "rgba(255,0,0,1.0)",
+          borderColor: "rgba(255,0,0,0.1)",
+          fill: false,
+          borderWidth: 10,
+          tension: 0.1,
         },
       ],
     },
-    options: {},
+    options: {
+      legend: {
+        position: "bottom",
+      },
+      aspectRatio: 3.1,
+    },
   });
 
-  return isVisible ? (
+  return (
     <div id="menuScreen">
-      <p>Počet přikladů: {history.length}</p>
       <canvas id="myChart"></canvas>
     </div>
-  ) : (
-    <></>
   );
 }

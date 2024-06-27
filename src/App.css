@@ -107,18 +107,13 @@ main {
   }
 
   #menuScreen {
-    position: fixed:
-    width: 100%;
-    height: 100%;
+    position: relative; 
+    width: 87vw;
     left: 0;
     top: 0;
-    right: 0;
-    bottom: 0;
-    
-    background-color: rgba(200, 0, 200, 0.8);
-    color: #00ff00;
     z-index: -100;
   }
+
 }
 
 @media screen and (orientation: portrait) and (max-width: 800px) {
