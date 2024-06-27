@@ -32,6 +32,7 @@ export default function App() {
 
   function onSubmit() {
     if (state != STATE_THINKING) return;
+    if (answer.length == 0) return; // TODO show message
 
     setState(STATE_ANSWERED);
     if (answer == Math.abs(excercise[1])) {
