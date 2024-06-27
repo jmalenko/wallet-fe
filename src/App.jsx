@@ -8,6 +8,16 @@ export default function App() {
     setValue(value + digit);
   }
 
+  function onSubmit() {
+  }
+
+  function onDelete() {
+    setValue("");
+  }
+
+  function onShowMenu() {
+  }
+
   return (
     <main>
       <div id="zadani">
@@ -32,25 +42,11 @@ export default function App() {
         <ButtonDigit value={9} onAddDigit={onAddDigit} />
         <ButtonDigit value={0} onAddDigit={onAddDigit} />
 
-        <object
-          id="odeslat"
-          data="images/send_24dp_FILL0_wght400_GRAD0_opsz24.svg"
-          class="border"
-        ></object>
-        <object
-          id="smazat"
-          data="images/backspace_24dp_FILL0_wght400_GRAD0_opsz24.svg"
-          class="border"
-        ></object>
+        <ButtonSubmit onSubmit={onSubmit} />
+        <ButtonDelete onDelete={onDelete} />
       </div>
 
-      <div id="menu">
-        <object
-          id="menu"
-          data="images/menu_24dp_FILL0_wght400_GRAD0_opsz24.svg"
-          class="border"
-        ></object>
-      </div>
+      <ButtonMenu onShowMenu={onShowMenu} />
     </main>
   );
 }
@@ -58,13 +54,46 @@ export default function App() {
 function ButtonDigit({ value, onAddDigit }) {
   const [state, setState] = useState(value);
 
-  function handleClick() {
+  function onClick() {
     onAddDigit(state);
   }
 
   return (
-    <span onClick={handleClick} class="border">
+    <span onClick={onClick} class="border">
       {value}
     </span>
   );
+}
+
+function ButtonSubmit({ onSubmit }) {
+  return (
+    <img
+      id="delete"
+      class="icon"
+      onClick={onSubmit}
+      src="images/send_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+    ></img>
+  );
+}
+
+function ButtonDelete({ onDelete }) {
+  return (
+    <img
+      id="submit"
+      class="icon"
+      onClick={onDelete}
+      src="images/backspace_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+    ></img>
+  );
+}
+
+function ButtonMenu({ onShowMenu }) {
+  return (
+    <img
+      id="menu"
+      class="icon"
+      onClick={onShowMenu}
+      src="images/menu_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+    ></img>
+  ); 
 }

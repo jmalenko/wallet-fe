@@ -7,12 +7,6 @@ main {
   user-select: none;
 }
 
-/* SVG icons */
-object {
-  width: 7vw;
-  height: 7vw;
-}
-
 #zadani {
   font-size: 17vw;
   text-align: center;
@@ -42,10 +36,10 @@ object {
   text-align: center;
 }
 
-#odeslat {
+#submit {
 }
 
-#smazat {
+#delete {
 }
 
 #menu {
@@ -60,6 +54,14 @@ object {
   background-color: #dddddd;
 }
 
+.icon {
+  width: 7vw;
+  height: 7vw;
+
+  border: 0.1vw solid #333333;
+  border-radius: 0.5vw;
+  background-color: #dddddd;
+}
 
 @media not screen and (orientation: portrait) and (max-width: 800px) {
   #zadani {
@@ -72,18 +74,17 @@ object {
     margin: 0 0.5vw;
   }
 
-  #smazat {
+  #submit {
     right: 3vw;
     bottom: 15vw;
-
-    display: block;
     position: fixed;
   }
-
-  #odeslat {
+  
+  #delete {
     float: right;
     margin-right: 3vw;
   }
+  
 }
 
 @media screen and (orientation: portrait) and (max-width: 800px) {
@@ -162,19 +163,15 @@ object {
   }
 
 
-  #smazat {
-    left: 3vw;
+  #submit {
+    right: 3vw;
     bottom: 3vw;
-
-    display: block;
     position: fixed;
   }
 
-  #odeslat {
-    right: 3vw;
+  #delete {
+    left: 3vw;
     bottom: 3vw;
-
-    display: block;
     position: fixed;
   }
 
