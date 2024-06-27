@@ -18,8 +18,7 @@ export default function App() {
   const [result, setResult] = useState(RESULT_NOT_DEFINED);
 
   const [menuVisible, setMenuVisible] = useState(false);
-  const [count, setCount] = useState(0); // Count of correct answers
-  const [countErrors, setCountErrors] = useState(0); // Count of incorrect answers for the current excercise
+  const [incorrectAnswers, setIncorrectAnswers] = useState([]); // Incorrect answers for the current excercise
   const [timeFrom, setTimeFrom] = useState(new Date());
   const [history, setHistory] = useState([]);
 
@@ -37,21 +36,21 @@ export default function App() {
     setState(STATE_ANSWERED);
     if (answer == Math.abs(excercise[1])) {
       setResult(RESULT_CORRECT);
-      setCount(count + 1);
       const timeTo = new Date();
       const timeDiff = timeTo.getTime() - timeFrom.getTime();
-      setHistory([...history, [excercise, countErrors, timeDiff]]);
+      setHistory([...history, [excercise, incorrectAnswers, timeDiff]]);
 
       setTimeout(() => {
         setState(STATE_THINKING);
         setAnswer(EMPTY);
         setExcercise(createExcercise());
         setResult(RESULT_NOT_DEFINED);
+        setIncorrectAnswers([]);
         setTimeFrom(new Date());
       }, 3000);
     } else {
       setResult(RESULT_INCORRECT);
-      setCountErrors(countErrors + 1);
+      setIncorrectAnswers(incorrectAnswers + 1);
 
       setTimeout(() => {
         setState(STATE_THINKING);
@@ -197,7 +196,7 @@ function MenuScreen({ isVisible, history }) {
   history.forEach((element) => {
     xValues.push(++c);
     yValues.push(element[2] / 1000);
-    yValuesBar.push(element[1]);
+    yValuesBar.push(element[1].length);
   });
 
   new Chart("myChart", {
