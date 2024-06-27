@@ -4,7 +4,7 @@ import { useState } from "react";
 export default function App() {
   const EMPTY = "";
   const MAX_LENGHT = 2;
-  
+
   const STATE_THINKING = 1;
   const STATE_ANSWERED = 2;
 
@@ -17,36 +17,46 @@ export default function App() {
   const [state, setState] = useState(STATE_THINKING);
   const [result, setResult] = useState(RESULT_NOT_DEFINED);
 
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [count, setCount] = useState(0); // Count of correct answers
+  const [countErrors, setCountErrors] = useState(0); // Count of incorrect answers for the current excercise
+  const [timeFrom, setTimeFrom] = useState(new Date());
+  const [history, setHistory] = useState([]);
+
   function onAddDigit(digit) {
-    if (state != STATE_THINKING)
-      return
-    
+    if (state != STATE_THINKING) return;
+
     if (answer.length < MAX_LENGHT) {
       setAnswer(answer + digit);
     } // TODO else show message
   }
 
   function onSubmit() {
-    if (state != STATE_THINKING)
-      return
+    if (state != STATE_THINKING) return;
 
-    setState(STATE_ANSWERED)
+    setState(STATE_ANSWERED);
     if (answer == Math.abs(excercise[1])) {
-      setResult(RESULT_CORRECT)
+      setResult(RESULT_CORRECT);
+      setCount(count + 1);
+      const timeTo = new Date();
+      const timeDiff = timeTo.getTime() - timeFrom.getTime();
+      setHistory([...history, [excercise, countErrors, timeDiff]]);
 
       setTimeout(() => {
-          setState(STATE_THINKING)
-          setAnswer(EMPTY)
-          setExcercise(createExcercise())
-          setResult(RESULT_NOT_DEFINED)
+        setState(STATE_THINKING);
+        setAnswer(EMPTY);
+        setExcercise(createExcercise());
+        setResult(RESULT_NOT_DEFINED);
+        setTimeFrom(new Date());
       }, 3000);
     } else {
-      setResult(RESULT_INCORRECT)
+      setResult(RESULT_INCORRECT);
+      setCountErrors(countErrors + 1);
 
       setTimeout(() => {
-        setState(STATE_THINKING)
-        setAnswer(EMPTY)
-        setResult(RESULT_NOT_DEFINED)
+        setState(STATE_THINKING);
+        setAnswer(EMPTY);
+        setResult(RESULT_NOT_DEFINED);
       }, 3000);
     }
   }
@@ -55,18 +65,19 @@ export default function App() {
     // a + b = c
     const a = 6 + Math.floor(Math.random() * 15);
     const c = 6 + Math.floor(Math.random() * 15);
-    const b = c - a
-    return [a, b, c]
+    const b = c - a;
+    return [a, b, c];
   }
-  
+
   function onDelete() {
-    if (state != STATE_THINKING)
-      return
+    if (state != STATE_THINKING) return;
 
     setAnswer(EMPTY);
   }
 
-  function onShowMenu() {}
+  function onShowMenu() {
+    setMenuVisible(!menuVisible);
+  }
 
   return (
     <main>
@@ -96,10 +107,12 @@ export default function App() {
         <ButtonDelete onDelete={onDelete} />
       </div>
 
-      {/* <ButtonMenu onShowMenu={onShowMenu} /> */}
+      <ButtonMenu onShowMenu={onShowMenu} />
 
       <IconCorrect isVisible={result == RESULT_CORRECT} />
       <IconIncorrect isVisible={result == RESULT_INCORRECT} />
+
+      <MenuScreen isVisible={menuVisible} history={history} />
     </main>
   );
 }
@@ -158,7 +171,7 @@ function IconCorrect({ isVisible }) {
       src="images/check_24dp_FILL0_wght400_GRAD0_opsz24.svg"
     ></img>
   ) : (
-    <p></p>
+    <></>
   );
 }
 
@@ -169,6 +182,44 @@ function IconIncorrect({ isVisible }) {
       src="images/close_24dp_FILL0_wght400_GRAD0_opsz24.svg"
     ></img>
   ) : (
-    <p></p>
+    <></>
+  );
+}
+
+function MenuScreen({ isVisible, history }) {
+  let xValues = [];
+  let yValues = [];
+  let yValuesBar = [];
+
+  let c = 0;
+  history.forEach((element) => {
+    xValues.push(++c);
+    yValues.push(element[2] / 1000);
+    yValuesBar.push(element[1]);
+  });
+
+  new Chart("myChart", {
+    type: "line",
+    data: {
+      labels: xValues,
+      datasets: [
+        {
+          backgroundColor: "rgba(0,0,255,1.0)",
+          borderColor: "rgba(0,0,255,0.1)",
+          data: yValues,
+          fill: false,
+        },
+      ],
+    },
+    options: {},
+  });
+
+  return isVisible ? (
+    <div id="menuScreen">
+      <p>Počet přikladů: {history.length}</p>
+      <canvas id="myChart"></canvas>
+    </div>
+  ) : (
+    <></>
   );
 }
