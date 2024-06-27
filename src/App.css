@@ -1,2 +1,181 @@
 main {
+  height: 100%;
+  width: 100%;
+
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-size: 6vw;
+  user-select: none;
+}
+
+/* SVG icons */
+object {
+  width: 7vw;
+  height: 7vw;
+}
+
+#zadani {
+  font-size: 17vw;
+  text-align: center;
+
+  position: fixed;
+  left: 0%;
+  right: 0%;
+}
+
+#operator1,
+#rovnase {
+  margin: 0 0.2em;
+}
+
+#neznama {
+  color: #00f;
+  border-bottom: 0.5vw dashed #00f;
+  display: inline-block;
+  width: 1.2em;
+}
+
+#tlacitka {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 3vw;
+  text-align: center;
+}
+
+#odeslat {
+}
+
+#smazat {
+}
+
+#menu {
+  position: fixed;
+  top: 3vw;
+  right: 3vw;
+}
+
+.border {
+  border: 0.1vw solid #333333;
+  border-radius: 0.5vw;
+  background-color: #dddddd;
+}
+
+
+@media not screen and (orientation: portrait) and (max-width: 800px) {
+  #zadani {
+    top: 35%;
+  }
+
+  #tlacitka span {
+    display: inline-block;
+    width: 7vw;
+    margin: 0 0.5vw;
+  }
+
+  #smazat {
+    right: 3vw;
+    bottom: 15vw;
+
+    display: block;
+    position: fixed;
+  }
+
+  #odeslat {
+    float: right;
+    margin-right: 3vw;
+  }
+}
+
+@media screen and (orientation: portrait) and (max-width: 800px) {
+  main {
+    font-size: 18vw;
+  }
+
+  object {
+    width: 20vw;
+    height: 20vw;
+  }
+
+  #zadani {
+    top: 20%;
+  }
+
+  #tlacitka span {
+    width: 20vw;
+    height: 20vw;
+    bottom: 0;
+    display: block;
+    position: fixed;
+  }
+
+  #n1 {
+    left: 17vw;
+    transform: translate(0, -72vmin);
+  }
+
+  #n2 {
+    left: 40vw;
+    transform: translate(0, -72vmin);
+  }
+
+  #n3 {
+    left: 63vw;
+    transform: translate(0, -72vmin);
+  }
+
+
+  #n4 {
+    left: 17vw;
+    transform: translate(0, -49vmin);
+  }
+
+  #n5 {
+    left: 40vw;
+    transform: translate(0, -49vmin);
+  }
+
+  #n6 {
+    left: 63vw;
+    transform: translate(0, -49vmin);
+  }
+
+
+  #n7 {
+    left: 17vw;
+    transform: translate(0, -26vmin);
+  }
+
+  #n8 {
+    left: 40vw;
+    transform: translate(0, -26vmin);
+  }
+
+  #n9 {
+    left: 63vw;
+    transform: translate(0, -26vmin);
+  }
+
+
+  #n0 {
+    left: 40vw;
+    transform: translate(0, -3vmin);
+  }
+
+
+  #smazat {
+    left: 3vw;
+    bottom: 3vw;
+
+    display: block;
+    position: fixed;
+  }
+
+  #odeslat {
+    right: 3vw;
+    bottom: 3vw;
+
+    display: block;
+    position: fixed;
+  }
+
 }
