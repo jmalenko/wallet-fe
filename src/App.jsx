@@ -12,7 +12,8 @@ export default function App() {
   const RESULT_CORRECT = 1;
   const RESULT_INCORRECT = 2;
 
-  const [value, setValue] = useState(EMPTY);
+  const [excercise, setExcercise] = useState(createExcercise());
+  const [answer, setAnswer] = useState(EMPTY);
   const [state, setState] = useState(STATE_THINKING);
   const [result, setResult] = useState(RESULT_NOT_DEFINED);
 
@@ -20,19 +21,23 @@ export default function App() {
     if (state != STATE_THINKING)
       return
     
-    if (value.length < MAX_LENGHT) {
-      setValue(value + digit);
+    if (answer.length < MAX_LENGHT) {
+      setAnswer(answer + digit);
     } // TODO else show message
   }
 
   function onSubmit() {
+    if (state != STATE_THINKING)
+      return
+
     setState(STATE_ANSWERED)
-    if (value == 34) {
+    if (answer == Math.abs(excercise[1])) {
       setResult(RESULT_CORRECT)
 
       setTimeout(() => {
           setState(STATE_THINKING)
-          setValue(EMPTY)
+          setAnswer(EMPTY)
+          setExcercise(createExcercise())
           setResult(RESULT_NOT_DEFINED)
       }, 3000);
     } else {
@@ -40,17 +45,25 @@ export default function App() {
 
       setTimeout(() => {
         setState(STATE_THINKING)
-        setValue(EMPTY)
+        setAnswer(EMPTY)
         setResult(RESULT_NOT_DEFINED)
       }, 3000);
     }
   }
 
+  function createExcercise() {
+    // a + b = c
+    const a = 6 + Math.floor(Math.random() * 15);
+    const c = 6 + Math.floor(Math.random() * 15);
+    const b = c - a
+    return [a, b, c]
+  }
+  
   function onDelete() {
     if (state != STATE_THINKING)
       return
 
-    setValue(EMPTY);
+    setAnswer(EMPTY);
   }
 
   function onShowMenu() {}
@@ -58,13 +71,13 @@ export default function App() {
   return (
     <main>
       <div id="zadani">
-        <span id="operand1">12</span>
-        <span id="operator">+</span>
+        <span id="operand1">{excercise[0]}</span>
+        <span id="operator">{0 <= excercise[1] ? "+" : "–"}</span>
         <span id="neznama">
-          <span id="operand2">{value}</span>
+          <span id="operand2">{answer}</span>
         </span>
         <span id="rovnase">=</span>
-        <span id="vysledek">46</span>
+        <span id="vysledek">{excercise[2]}</span>
       </div>
 
       <div id="tlacitka">
