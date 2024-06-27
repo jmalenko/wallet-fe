@@ -46,7 +46,7 @@ export default function App() {
         <ButtonDelete onDelete={onDelete} />
       </div>
 
-      <ButtonMenu onShowMenu={onShowMenu} />
+      {/* <ButtonMenu onShowMenu={onShowMenu} /> */}
     </main>
   );
 }
@@ -68,7 +68,7 @@ function ButtonDigit({ value, onAddDigit }) {
 function ButtonSubmit({ onSubmit }) {
   return (
     <img
-      id="delete"
+      id="submit"
       class="icon"
       onClick={onSubmit}
       src="images/send_24dp_FILL0_wght400_GRAD0_opsz24.svg"
@@ -79,7 +79,7 @@ function ButtonSubmit({ onSubmit }) {
 function ButtonDelete({ onDelete }) {
   return (
     <img
-      id="submit"
+      id="delete"
       class="icon"
       onClick={onDelete}
       src="images/backspace_24dp_FILL0_wght400_GRAD0_opsz24.svg"

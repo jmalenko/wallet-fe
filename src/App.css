@@ -65,7 +65,7 @@ main {
 
 @media not screen and (orientation: portrait) and (max-width: 800px) {
   #zadani {
-    top: 35%;
+    top: 7%;
   }
 
   #tlacitka span {
@@ -75,14 +75,14 @@ main {
   }
 
   #submit {
-    right: 3vw;
-    bottom: 15vw;
-    position: fixed;
-  }
-  
-  #delete {
     float: right;
     margin-right: 3vw;
+  }
+
+#delete {
+    right: 3vw;
+    bottom: 12vw;
+    position: fixed;
   }
   
 }
