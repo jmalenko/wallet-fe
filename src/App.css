@@ -65,7 +65,9 @@ main {
 
 @media not screen and (orientation: portrait) and (max-width: 800px) {
   #zadani {
-    top: 7%;
+    top: calc((100%   - 3vw  - 7vw  - 3vw  - 17vw) / 2);
+         /*    screen top    button bottom font      equal
+               height margin height margin size      spacing */
   }
 
   #tlacitka span {
@@ -122,9 +124,11 @@ main {
   }
 
   #zadani {
-    top: 20%;
+    top: calc((100%   - 3vw  - 72vmin - 3vw  - 17vw) / 2);
+         /*    screen top    button   bottom font      equal
+               height margin top      margin size      spacing */
   }
-
+  
   #tlacitka span {
     width: 20vw;
     height: 20vw;
