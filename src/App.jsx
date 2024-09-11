@@ -12,6 +12,8 @@ export default function App() {
   const RESULT_CORRECT = 1;
   const RESULT_INCORRECT = 2;
 
+  const INDICATOR_TIMEOUT = 2000;
+
   const [exercise, setExercise] = useState();
   const [answer, setAnswer] = useState(EMPTY);
   const [state, setState] = useState(STATE_THINKING);
@@ -64,7 +66,7 @@ export default function App() {
         setResult(RESULT_NOT_DEFINED);
         setIncorrectAnswers([]);
         setTimeFrom(new Date());
-      }, 3000);
+      },  INDICATOR_TIMEOUT);
     } else {
       setResult(RESULT_INCORRECT);
       setIncorrectAnswers(incorrectAnswers + 1);
@@ -73,7 +75,7 @@ export default function App() {
         setState(STATE_THINKING);
         setAnswer(EMPTY);
         setResult(RESULT_NOT_DEFINED);
-      }, 3000);
+      },  INDICATOR_TIMEOUT);
     }
   }
 
