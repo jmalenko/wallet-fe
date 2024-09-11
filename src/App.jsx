@@ -12,7 +12,7 @@ export default function App() {
   const RESULT_CORRECT = 1;
   const RESULT_INCORRECT = 2;
 
-  const [excercise, setExcercise] = useState(createExcercise());
+  const [exercise, setExercise] = useState();
   const [answer, setAnswer] = useState(EMPTY);
   const [state, setState] = useState(STATE_THINKING);
   const [result, setResult] = useState(RESULT_NOT_DEFINED);
@@ -35,16 +35,16 @@ export default function App() {
     if (answer.length == 0) return; // TODO show message
 
     setState(STATE_ANSWERED);
-    if (answer == Math.abs(excercise[1])) {
+    if (answer == Math.abs(exercise[1])) {
       setResult(RESULT_CORRECT);
       const timeTo = new Date();
       const timeDiff = timeTo.getTime() - timeFrom.getTime();
-      setHistory([...history, [excercise, incorrectAnswers, timeDiff]]);
+      setHistory([...history, [exercise, incorrectAnswers, timeDiff]]);
 
       setTimeout(() => {
         setState(STATE_THINKING);
         setAnswer(EMPTY);
-        setExcercise(createExcercise());
+        setExercise(exerciseNext);
         setResult(RESULT_NOT_DEFINED);
         setIncorrectAnswers([]);
         setTimeFrom(new Date());
@@ -84,13 +84,15 @@ export default function App() {
   return (
     <main>
       <div id="zadani">
-        <span id="operand1">{excercise[0]}</span>
-        <span id="operator">{0 <= excercise[1] ? "+" : "–"}</span>
-        <span id="neznama">
-          <span id="operand2">{answer}</span>
-        </span>
-        <span id="rovnase">=</span>
-        <span id="vysledek">{excercise[2]}</span>
+        {exercise != null && <>
+          <span id="operand1">{exercise[0]}</span>
+          <span id="operator">{0 <= exercise[1] ? "+" : "–"}</span>
+          <span id="neznama">
+            <span id="operand2">{answer}</span>
+          </span>
+          <span id="rovnase">=</span>
+          <span id="vysledek">{exercise[2]}</span>
+        </>}
       </div>
 
       <div id="tlacitka">
