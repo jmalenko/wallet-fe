@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function App() {
   const EMPTY = "";
@@ -16,11 +16,27 @@ export default function App() {
   const [answer, setAnswer] = useState(EMPTY);
   const [state, setState] = useState(STATE_THINKING);
   const [result, setResult] = useState(RESULT_NOT_DEFINED);
+  const [exerciseNext, setExerciseNext] = useState();
 
-  const [menuVisible, setMenuVisible] = useState(false);
-  const [incorrectAnswers, setIncorrectAnswers] = useState([]); // Incorrect answers for the current excercise
+  // const [menuVisible, setMenuVisible] = useState(false);
+  const [incorrectAnswers, setIncorrectAnswers] = useState([]); // Incorrect answers for the current exercise
   const [timeFrom, setTimeFrom] = useState(new Date());
   const [history, setHistory] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:8000/matematika')
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log("New exercise: " + JSON.stringify(data));
+        if (!exercise) { // 1st exercise
+          setExercise([data.zadani[0], data.zadani[2], data.zadani[4]]);
+        } else { // use this exercise after the current exercise
+          setExerciseNext([data.zadani[0], data.zadani[2], data.zadani[4]]);
+        }
+      });
+  }, [exercise]);
 
   function onAddDigit(digit) {
     if (state != STATE_THINKING) return;
@@ -68,9 +84,9 @@ export default function App() {
   }
 
   function onShowMenu() {
-    setMenuVisible(!menuVisible);
-    const element = document.getElementById("menuScreen")
-    element.style.visibility = menuVisible ? "visible" : "hidden"; 
+    // setMenuVisible(!menuVisible);
+    // const element = document.getElementById("menuScreen")
+    // element.style.visibility = menuVisible ? "visible" : "hidden";
   }
 
   return (
@@ -121,7 +137,7 @@ function ButtonDigit({ value, onAddDigit }) {
   }
 
   return (
-    <span onClick={onClick} class="border">
+    <span onClick={onClick} className="icon">
       {value}
     </span>
   );
@@ -131,7 +147,7 @@ function ButtonSubmit({ onSubmit }) {
   return (
     <img
       id="submit"
-      class="icon"
+      className="icon"
       onClick={onSubmit}
       src="images/send_24dp_FILL0_wght400_GRAD0_opsz24.svg"
     ></img>
@@ -142,7 +158,7 @@ function ButtonDelete({ onDelete }) {
   return (
     <img
       id="delete"
-      class="icon"
+      className="icon"
       onClick={onDelete}
       src="images/backspace_24dp_FILL0_wght400_GRAD0_opsz24.svg"
     ></img>
@@ -153,7 +169,7 @@ function ButtonMenu({ onShowMenu }) {
   return (
     <img
       id="menu"
-      class="icon"
+      className="icon"
       onClick={onShowMenu}
       src="images/menu_24dp_FILL0_wght400_GRAD0_opsz24.svg"
     ></img>
