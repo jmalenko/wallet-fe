@@ -61,14 +61,6 @@ export default function App() {
     }
   }
 
-  function createExcercise() {
-    // a + b = c
-    const a = 6 + Math.floor(Math.random() * 15);
-    const c = 6 + Math.floor(Math.random() * 15);
-    const b = c - a;
-    return [a, b, c];
-  }
-
   function onDelete() {
     if (state != STATE_THINKING) return;
 
