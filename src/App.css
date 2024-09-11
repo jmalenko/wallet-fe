@@ -54,22 +54,26 @@ main {
   background-color: transparent;
 }
 
+.indicator_wrapper {
+  position: relative;
+}
+
 #correct {
   width: 34vw;
   height: 34vw;
-  position: fixed;
 
-  left: 32vw;
-  top: 4vw;
+  position: absolute;
+  left: -4vw;
+  top: -4vw;
 }
 
 #incorrect {
   width: 34vw;
   height: 34vw;
-  position: fixed;
 
-  left: 28vw;
-  top: -5vw;
+  position: absolute;
+  left: -7vw;
+  top: -10vw;
 }
 
 .icon {
@@ -117,7 +121,7 @@ main {
 
 }
 
-@media screen and (orientation: portrait) and (max-width: 800px) {
+@media screen and (orientation: portrait) and (max-width: 900px) {
   main {
     font-size: 18vw;
   }
@@ -207,16 +211,6 @@ main {
     height: 20vw;
 
     line-height: 23vw;
-  }
-
-  #correct {
-    left: 32vw;
-    top: 40vw;
-  }
-
-  #incorrect {
-    left: 28vw;
-    top: 31vw;
   }
 
 }

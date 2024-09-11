@@ -95,8 +95,12 @@ export default function App() {
         {exercise != null && <>
           <span id="operand1">{exercise[0]}</span>
           <span id="operator">{0 <= exercise[1] ? "+" : "–"}</span>
-          <span id="neznama">
-            <span id="operand2">{answer}</span>
+          <span className="indicator_wrapper">
+            <span id="neznama">
+              <span id="operand2">{answer}</span>
+            </span>
+            <IconCorrect isVisible={result == RESULT_CORRECT} />
+            <IconIncorrect isVisible={result == RESULT_INCORRECT} />
           </span>
           <span id="rovnase">=</span>
           <span id="vysledek">{exercise[2]}</span>
