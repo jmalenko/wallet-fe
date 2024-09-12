@@ -29,7 +29,7 @@ main {
   border-bottom: 0.5vw dashed #00f;
   display: inline-block;
   vertical-align: top;
-  height: 18vw;
+  height: 20vw;
   width: 1.2em;
 }
 
@@ -64,7 +64,7 @@ main {
 
   position: absolute;
   left: -4vw;
-  top: -4vw;
+  top: 0vw;
 }
 
 #incorrect {
@@ -73,7 +73,7 @@ main {
 
   position: absolute;
   left: -7vw;
-  top: -10vw;
+  top: -5vw;
 }
 
 .icon {
@@ -84,14 +84,14 @@ main {
   width: 7vw;
   height: 7vw;
 
-  line-height: 8.4vw; /* center text vertically */
+  line-height: 6.5vw; /* center text vertically */
 }
 
 @media not screen and (orientation: portrait) and (max-width: 800px) {
   #zadani {
-    top: calc((100%   - 3vw  - 7vw  - 3vw  - 17vw) / 2);
-         /*    screen top    button bottom font      equal
-               height margin height margin size      spacing */
+    top: calc((100%   - 3vw  - 7vw  - 3vw  - 17vw - 5vw) / 2);
+         /*    screen top    button bottom font     megic  equal
+               height margin height margin size     const  spacing */
   }
 
   #tlacitka span {
@@ -118,7 +118,6 @@ main {
     top: 0;
     z-index: -100;
   }
-
 }
 
 @media screen and (orientation: portrait) and (max-width: 900px) {
@@ -127,9 +126,9 @@ main {
   }
 
   #zadani {
-    top: calc((100%   - 72vmin   - 20vw - 3vw  - 18vw) / 2);
-         /*    screen top button button top    font      equal    Note: "bottom margin" is included in the "button top"
-               height bottom     height margin size      spacing */
+    top: calc((100%   - 72vmin   - 20vw - 3vw  - 18vw - 4vw) / 2);
+         /*    screen top button button top    font     magic  equal    Note: "bottom margin" is included in the "button top"
+               height bottom     height margin size     const  spacing */
   }
   
   #tlacitka span {
@@ -210,7 +209,6 @@ main {
     width: 20vw;
     height: 20vw;
 
-    line-height: 23vw;
+    line-height: 18vw;
   }
-
 }
