@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 
 export default function App() {
   const EMPTY = "";
-  const MAX_LENGHT = 2;
+  const MAX_LENGTH = 2;
 
   const STATE_THINKING = 1;
   const STATE_ANSWERED = 2;
@@ -48,7 +48,7 @@ export default function App() {
   function onAddDigit(digit) {
     if (state != STATE_THINKING) return;
 
-    if (answer.length < MAX_LENGHT) {
+    if (answer.length < MAX_LENGTH || answer.length < exercise.zadani[exercise.neznama].toString().length) {
       setAnswer(answer + digit);
     } // TODO else show message
   }
