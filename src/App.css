@@ -32,27 +32,6 @@ main {
   width: 1.2em;
 }
 
-#tlacitka {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 3vw;
-  text-align: center;
-}
-
-#submit {
-}
-
-#delete {
-}
-
-#menu {
-  position: fixed;
-  top: 3vw;
-  right: 3vw;
-  background-color: transparent;
-}
-
 .neznama_wrapper {
   position: relative;
 }
@@ -73,6 +52,27 @@ main {
   position: absolute;
   left: -7vw;
   top: -5vw;
+}
+
+#tlacitka {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 3vw;
+  text-align: center;
+}
+
+#submit {
+}
+
+#delete {
+}
+
+#menu {
+  position: fixed;
+  top: 3vw;
+  right: 3vw;
+  background-color: transparent;
 }
 
 .icon {
