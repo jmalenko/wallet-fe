@@ -10,14 +10,14 @@ import Welcome from './Welcome'
 const router = createBrowserRouter([
     {
         path: "/",
-		element: <Welcome/>,
+		    element: <Welcome/>,
     },
     {
         path: "matematika",
         element: <App/>,
     },
     {
-        path: "matematika/:lekce",
+        path: "matematika/:trida/:lekce",
         element: <App/>,
     },
 ]);
