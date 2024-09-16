@@ -23,7 +23,7 @@ export default function Welcome() {
   }, []);
 
   useEffect(() => {
-    fetch('http://localhost:8000/' + predmet + '/seznam_cviceni/' + trida)
+    fetch('http://localhost:8000/' + predmet + '/seznam_cviceni/' + (trida || 1))
       .then((res) => {
         return res.json();
       })
