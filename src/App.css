@@ -87,6 +87,14 @@ main {
   line-height: 6.5vw; /* center text vertically */
 }
 
+#status {
+  font-size: 1vw;
+
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+
 @media not screen and (orientation: portrait) and (max-width: 800px) {
   #zadani {
     top: calc((100%   - 3vw  - 7vw  - 3vw  - 17vw - 5vw) / 2);

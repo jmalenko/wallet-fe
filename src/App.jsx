@@ -1,5 +1,6 @@
 import "./App.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect} from "react";
+import { useParams } from 'react-router-dom';
 
 export default function App() {
   const EMPTY = "";
@@ -25,17 +26,20 @@ export default function App() {
   const [timeFrom, setTimeFrom] = useState(new Date());
   const [history, setHistory] = useState([]);
 
+  let { lekce } = useParams();
+  const [status, setStatus] = useState();
+
   useEffect(() => {
-    fetch('http://localhost:8000/matematika')
+    fetch('http://localhost:8000/matematika/' + (lekce === undefined ? "1" : lekce))
       .then((res) => {
         return res.json();
       })
       .then((data) => {
         console.log("New exercise: " + JSON.stringify(data));
         if (!exercise) { // 1st exercise
-          setExercise([data.zadani[0], data.zadani[2], data.zadani[4]]);
+          setExercise(data);
         } else { // use this exercise after the current exercise
-          setExerciseNext([data.zadani[0], data.zadani[2], data.zadani[4]]);
+          setExerciseNext(data);
         }
       });
   }, [exercise]);
@@ -53,7 +57,8 @@ export default function App() {
     if (answer.length == 0) return; // TODO show message
 
     setState(STATE_ANSWERED);
-    if (answer == Math.abs(exercise[1])) {
+    const correct = exercise.zadani[Number(exercise.neznama)] == Number(answer)
+    if (correct) {
       setResult(RESULT_CORRECT);
       const timeTo = new Date();
       const timeDiff = timeTo.getTime() - timeFrom.getTime();
@@ -93,21 +98,7 @@ export default function App() {
 
   return (
     <main>
-      <div id="zadani">
-        {exercise != null && <>
-          <span id="operand1">{exercise[0]}</span>
-          <span id="operator">{0 <= exercise[1] ? "+" : "–"}</span>
-          <span className="indicator_wrapper">
-            <span id="neznama">
-              <span id="operand2">{answer}</span>
-            </span>
-            <IconCorrect isVisible={result == RESULT_CORRECT} />
-            <IconIncorrect isVisible={result == RESULT_INCORRECT} />
-          </span>
-          <span id="rovnase">=</span>
-          <span id="vysledek">{exercise[2]}</span>
-        </>}
-      </div>
+      <Zadani exercise={exercise} answer={answer} showCorrect={result == RESULT_CORRECT} showIncorrect={result == RESULT_INCORRECT} />
 
       <div id="tlacitka">
         <ButtonDigit value={1} onAddDigit={onAddDigit} />
@@ -135,7 +126,65 @@ export default function App() {
   );
 }
 
-function ButtonDigit({ value, onAddDigit }) {
+function Zadani({ exercise, answer, showCorrect, showIncorrect }) {
+  let a = typeof exercise !== 'undefined' ?
+                    exercise.neznama == 0 ? (
+                          <span className="indicator_wrapper">
+                                  <span id="neznama">
+                                    <span id="operand1">{answer}</span>
+                                  </span>
+                            <IconCorrect isVisible={showCorrect}/>
+                            <IconIncorrect isVisible={showIncorrect}/>
+                          </span>
+                        ) : (
+                          <span id="operand1">{exercise.zadani[0]}</span>
+                    )
+                : <span></span>
+
+  let b = typeof exercise !== 'undefined' ?
+                    exercise.neznama == 2 ? (
+                          <span className="indicator_wrapper">
+                                  <span id="neznama">
+                                    <span id="operand2">{answer}</span>
+                                  </span>
+                            <IconCorrect isVisible={showCorrect}/>
+                            <IconIncorrect isVisible={showIncorrect}/>
+                          </span>
+                        ) : (
+                          <span id="operand2">{exercise.zadani[2]}</span>
+                    )
+                : <span></span>
+
+  let c = typeof exercise !== 'undefined' ?
+                    exercise.neznama == 4 ? (
+                          <span className="indicator_wrapper">
+                                  <span id="neznama">
+                                    <span id="vysledek">{answer}</span>
+                                  </span>
+                            {/*<IconCorrect isVisible={true}/>*/}
+                            {/*<IconIncorrect isVisible={true}/>*/}
+                            <IconCorrect isVisible={showCorrect}/>
+                            <IconIncorrect isVisible={showIncorrect}/>
+                          </span>
+                        ) : (
+                          <span id="vysledek">{exercise.zadani[4]}</span>
+                    )
+                : <span></span>
+
+  return (
+    <div id="zadani">
+      {exercise != null && <>
+        {a}
+        <span id="operator">{exercise.zadani[1]}</span>
+        {b}
+        <span id="rovnase">{exercise.zadani[3]}</span>
+        {c}
+      </>}
+    </div>
+  );
+}
+
+function ButtonDigit({value, onAddDigit}) {
   const [state, setState] = useState(value);
 
   function onClick() {
@@ -149,24 +198,24 @@ function ButtonDigit({ value, onAddDigit }) {
   );
 }
 
-function ButtonSubmit({ onSubmit }) {
+function ButtonSubmit({onSubmit}) {
   return (
     <img
       id="submit"
       className="icon"
       onClick={onSubmit}
-      src="images/send_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+      src="/images/send_24dp_FILL0_wght400_GRAD0_opsz24.svg"
     ></img>
   );
 }
 
-function ButtonDelete({ onDelete }) {
+function ButtonDelete({onDelete}) {
   return (
     <img
       id="delete"
       className="icon"
       onClick={onDelete}
-      src="images/backspace_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+      src="/images/backspace_24dp_FILL0_wght400_GRAD0_opsz24.svg"
     ></img>
   );
 }
@@ -177,7 +226,7 @@ function ButtonMenu({ onShowMenu }) {
       id="menu"
       className="icon"
       onClick={onShowMenu}
-      src="images/menu_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+      src="/images/menu_24dp_FILL0_wght400_GRAD0_opsz24.svg"
     ></img>
   );
 }
@@ -186,7 +235,7 @@ function IconCorrect({ isVisible }) {
   return isVisible ? (
     <img
       id="correct"
-      src="images/check_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+      src="/images/check_24dp_FILL0_wght400_GRAD0_opsz24.svg"
     ></img>
   ) : (
     <></>
@@ -197,7 +246,7 @@ function IconIncorrect({ isVisible }) {
   return isVisible ? (
     <img
       id="incorrect"
-      src="images/close_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+      src="/images/close_24dp_FILL0_wght400_GRAD0_opsz24.svg"
     ></img>
   ) : (
     <></>

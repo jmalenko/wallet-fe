@@ -1,0 +1,9 @@
+main {
+  height: 100%;
+  width: 100%;
+
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-size: 4vw;
+  user-select: none;
+}
+
