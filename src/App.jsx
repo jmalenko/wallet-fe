@@ -128,59 +128,20 @@ export default function App() {
 }
 
 function Zadani({ exercise, answer, showCorrect, showIncorrect }) {
-  let a = typeof exercise !== 'undefined' ?
-                    exercise.neznama == 0 ? (
-                          <span className="indicator_wrapper">
-                                  <span id="neznama">
-                                    <span id="operand1">{answer}</span>
-                                  </span>
-                            <IconCorrect isVisible={showCorrect}/>
-                            <IconIncorrect isVisible={showIncorrect}/>
-                          </span>
-                        ) : (
-                          <span id="operand1">{exercise.zadani[0]}</span>
-                    )
-                : <span></span>
-
-  let b = typeof exercise !== 'undefined' ?
-                    exercise.neznama == 2 ? (
-                          <span className="indicator_wrapper">
-                                  <span id="neznama">
-                                    <span id="operand2">{answer}</span>
-                                  </span>
-                            <IconCorrect isVisible={showCorrect}/>
-                            <IconIncorrect isVisible={showIncorrect}/>
-                          </span>
-                        ) : (
-                          <span id="operand2">{exercise.zadani[2]}</span>
-                    )
-                : <span></span>
-
-  let c = typeof exercise !== 'undefined' ?
-                    exercise.neznama == 4 ? (
-                          <span className="indicator_wrapper">
-                                  <span id="neznama">
-                                    <span id="vysledek">{answer}</span>
-                                  </span>
-                            {/*<IconCorrect isVisible={true}/>*/}
-                            {/*<IconIncorrect isVisible={true}/>*/}
-                            <IconCorrect isVisible={showCorrect}/>
-                            <IconIncorrect isVisible={showIncorrect}/>
-                          </span>
-                        ) : (
-                          <span id="vysledek">{exercise.zadani[4]}</span>
-                    )
-                : <span></span>
-
   return (
     <div id="zadani">
-      {exercise != null && <>
-        {a}
-        <span id="operator">{exercise.zadani[1]}</span>
-        {b}
-        <span id="rovnase">{exercise.zadani[3]}</span>
-        {c}
-      </>}
+      {exercise != null && Object.keys(exercise.zadani).map(i => (
+        i == exercise.neznama ? (
+          <span key={i} className="neznama_wrapper">
+            <span id="neznama">
+              <span>{answer}</span>
+            </span>
+            <IconCorrect isVisible={showCorrect}/>
+            <IconIncorrect isVisible={showIncorrect}/>
+          </span>
+        ) : (
+          <span key={i}>{exercise.zadani[i]}</span>)))
+      }
     </div>
   );
 }

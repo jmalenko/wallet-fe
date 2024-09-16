@@ -19,9 +19,8 @@ main {
   pointer-events: none;
 }
 
-#operator,
-#rovnase {
-  margin: 0 0.2em;
+#zadani > span {
+  margin: 0 0.1em;
 }
 
 #neznama {
@@ -54,7 +53,7 @@ main {
   background-color: transparent;
 }
 
-.indicator_wrapper {
+.neznama_wrapper {
   position: relative;
 }
 
