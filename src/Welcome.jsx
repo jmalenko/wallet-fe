@@ -16,7 +16,7 @@ export default function Welcome() {
       .then((data) => {
         // console.log("Response: " + JSON.stringify(data));
         setSeznam(data);
-        setSelected(data[0][0]);
+        setSelected(Object.keys(data)[0]);
       });
   }, []);
 
@@ -56,8 +56,8 @@ export default function Welcome() {
           <td><label>Cvičení:</label></td>
           <td>
             <select onChange={handleChange}>{
-              seznam !== undefined && seznam.map(x =>
-                  <option key={x[0]} value={x[0]}>{x[0]}: {x[1]}</option> )
+              seznam !== undefined && Object.keys(seznam).map(id => (
+                    <option key={id} value={id}>{id}: {seznam[id]}</option> ))
             }</select>
           </td>
         </tr>
