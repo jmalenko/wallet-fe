@@ -14,6 +14,7 @@ export default function App() {
   const RESULT_INCORRECT = 2;
 
   const INDICATOR_TIMEOUT = 2000;
+  const STATUS_TIMEOUT = 3000;
 
   const [exercise, setExercise] = useState();
   const [answer, setAnswer] = useState(EMPTY);
@@ -28,7 +29,7 @@ export default function App() {
 
   let { trida } = useParams();
   let { cviceni } = useParams();
-  const [status, setStatus] = useState();
+  const [message, setMessage] = useState();
 
   useEffect(() => {
     fetch('http://localhost:8000/matematika/' + trida + '/' + cviceni)
@@ -51,12 +52,17 @@ export default function App() {
     // console.log("Add digit: " + answer + " + " + digit);
     if (answer.length < MAX_LENGTH || answer.length < exercise.zadani[exercise.neznama].toString().length) {
       setAnswer(answer + digit);
-    } // TODO else show message
+    } else {
+      setMessage("Není povoleno zadat příliš dlouhé číslo")
+    }
   }
 
   function onSubmit() {
     if (state !== STATE_THINKING) return;
-    if (answer.length === 0) return; // TODO show message
+    if (answer.length === 0) {
+      setMessage("Musíš zadat číslo")
+      return
+    }
 
     setState(STATE_ANSWERED);
     const expectedAnswer =  Number(exercise.zadani[Number(exercise.neznama)])
@@ -101,6 +107,28 @@ export default function App() {
     // const element = document.getElementById("menuScreen")
     // element.style.visibility = menuVisible ? "visible" : "hidden";
   }
+
+  // Status
+
+  let timeout = null;
+
+  useEffect(() => {
+    if (message != null) {
+      clearTimeout(timeout);
+
+      timeout = setTimeout(() => hideStatus(), STATUS_TIMEOUT);
+
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+  }, [message]);
+
+  function hideStatus() {
+    setMessage(null);
+  }
+
+  // Physical keys
 
   useEffect(() => {
     document.addEventListener('keydown', onKeyDown);
@@ -148,7 +176,9 @@ export default function App() {
       <IconCorrect isVisible={result == RESULT_CORRECT} />
       <IconIncorrect isVisible={result == RESULT_INCORRECT} />
 
-      <MenuScreen isVisible={menuVisible} history={history} />
+
+      {message != null &&
+        <div id="message">{message}</div>}
     </main>
   );
 }

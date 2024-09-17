@@ -86,12 +86,15 @@ main {
   line-height: 6.5vw; /* center text vertically */
 }
 
-#status {
-  font-size: 1vw;
-
+#message {
   position: absolute;
-  left: 0;
-  bottom: 0;
+  left: 3vw;
+  right: 13vw;
+  bottom: 11vw;
+
+  font-size: 3vw;
+  color: #ff0000;
+  text-align: center;
 }
 
 @media not screen and (orientation: portrait) and (max-width: 800px) {
@@ -128,10 +131,6 @@ main {
 }
 
 @media screen and (orientation: portrait) and (max-width: 900px) {
-  main {
-    font-size: 18vw;
-  }
-
   #zadani {
     top: calc((100%   - 72vmin   - 20vw - 3vw  - 18vw - 4vw) / 2);
          /*    screen top button button top    font     magic  equal    Note: "bottom margin" is included in the "button top"
@@ -144,6 +143,7 @@ main {
     bottom: 0;
     display: block;
     position: fixed;
+    font-size: 16vw;
   }
 
   #tlacitka span:nth-child(1) {
@@ -217,5 +217,11 @@ main {
     height: 20vw;
 
     line-height: 18vw;
+  }
+
+  #message {
+    left: 3vw;
+    right: 3vw;
+    bottom: 93vmin;
   }
 }
