@@ -48,6 +48,7 @@ export default function App() {
   function onAddDigit(digit) {
     if (state != STATE_THINKING) return;
 
+    // console.log("Add digit: " + answer + " + " + digit);
     if (answer.length < MAX_LENGTH || answer.length < exercise.zadani[exercise.neznama].toString().length) {
       setAnswer(answer + digit);
     } // TODO else show message
@@ -91,6 +92,7 @@ export default function App() {
   function onDelete() {
     if (state != STATE_THINKING) return;
 
+    // console.log("Clear answer");
     setAnswer(EMPTY);
   }
 
@@ -98,6 +100,27 @@ export default function App() {
     // setMenuVisible(!menuVisible);
     // const element = document.getElementById("menuScreen")
     // element.style.visibility = menuVisible ? "visible" : "hidden";
+  }
+
+  useEffect(() => {
+    document.addEventListener('keydown', onKeyDown);
+
+    return function () {
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [answer]);
+
+  const onKeyDown = (event) => {
+    if (state != STATE_THINKING) return;
+
+    if (isFinite(event.key)) // test for a digit
+      onAddDigit(event.key);
+    else if (event.key === "Escape")
+      onDelete()
+    else if (event.key === "Backspace") {
+      setAnswer(answer.substring(0, answer.length - 1));
+    } else if (event.key === "Enter")
+      onSubmit()
   }
 
   return (
