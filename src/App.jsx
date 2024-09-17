@@ -157,7 +157,7 @@ function Zadani({ exercise, answer, showCorrect, showIncorrect }) {
   return (
     <div id="zadani">
       {exercise != null && Object.keys(exercise.zadani).map(i => (
-        i === exercise.neznama ? (
+        i == exercise.neznama ? (
           <span key={i} className="neznama_wrapper">
             <span id="neznama">
               <span>{answer}</span>
