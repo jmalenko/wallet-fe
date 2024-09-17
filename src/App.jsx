@@ -37,10 +37,11 @@ export default function App() {
         return res.json();
       })
       .then((data) => {
-        console.log("New exercise: " + JSON.stringify(data));
         if (!exercise) { // 1st exercise
+          console.log("New exercise: " + JSON.stringify(data));
           setExercise(data);
         } else { // use this exercise after the current exercise
+          console.log("Next exercise: " + JSON.stringify(data));
           setExerciseNext(data);
         }
       });
@@ -68,7 +69,7 @@ export default function App() {
     const expectedAnswer =  Number(exercise.zadani[Number(exercise.neznama)])
     const actualAnswer = Number(answer)
     const correct = expectedAnswer === actualAnswer
-    console.log("Expected answer: " + expectedAnswer + ", actual answer: " + actualAnswer + ", correct: " + correct);
+    console.log(correct ? "Correct" : "Incorrect. Expected answer: " + expectedAnswer + ", actual answer: " + actualAnswer);
     if (correct) {
       setResult(RESULT_CORRECT);
       const timeTo = new Date();
