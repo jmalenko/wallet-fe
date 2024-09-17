@@ -27,11 +27,11 @@ export default function App() {
   const [history, setHistory] = useState([]);
 
   let { trida } = useParams();
-  let { lekce } = useParams();
+  let { cviceni } = useParams();
   const [status, setStatus] = useState();
 
   useEffect(() => {
-    fetch('http://localhost:8000/matematika/' + trida + '/' + lekce)
+    fetch('http://localhost:8000/matematika/' + trida + '/' + cviceni)
       .then((res) => {
         return res.json();
       })

@@ -17,7 +17,7 @@ const router = createBrowserRouter([
         element: <App/>,
     },
     {
-        path: "matematika/:trida/:lekce",
+        path: "matematika/:trida/:cviceni",
         element: <App/>,
     },
 ]);
