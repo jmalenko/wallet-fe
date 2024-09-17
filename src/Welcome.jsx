@@ -50,6 +50,16 @@ export default function Welcome() {
     <main>
       <table>
         <tbody>
+
+        <tr>
+          <td><label>Předmět:</label></td>
+          <td>
+            <select id="predmet" className="empty" disabled>
+              <option value="math">Matematika</option>
+            </select>
+          </td>
+        </tr>
+
         <tr>
           <td><label>Třída:</label></td>
           <td>
@@ -60,16 +70,6 @@ export default function Welcome() {
           </td>
         </tr>
 
-        {/*<tr>*/}
-        {/*  <td><label>Předmět:</label></td>*/}
-        {/*  <td>*/}
-        {/*    <select id="predmet" className="empty">*/}
-        {/*      <option value="math">Matematika</option>*/}
-        {/*      <option value="math">Český jazyk</option>*/}
-        {/*    </select>*/}
-        {/*  </td>*/}
-        {/*</tr>*/}
-
         <tr>
           <td><label>Cvičení:</label></td>
           <td>
@@ -79,6 +79,7 @@ export default function Welcome() {
             }</select>
           </td>
         </tr>
+
         </tbody>
       </table>
 
