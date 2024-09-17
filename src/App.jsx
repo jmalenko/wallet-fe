@@ -58,7 +58,10 @@ export default function App() {
     if (answer.length == 0) return; // TODO show message
 
     setState(STATE_ANSWERED);
-    const correct = exercise.zadani[Number(exercise.neznama)] == Number(answer)
+    const expectedAnswer =  Number(exercise.zadani[Number(exercise.neznama)])
+    const actualAnswer = Number(answer)
+    const correct = expectedAnswer == actualAnswer
+    console.log("Expected answer: " + expectedAnswer + ", actual answer: " + actualAnswer + ", correct: " + correct);
     if (correct) {
       setResult(RESULT_CORRECT);
       const timeTo = new Date();
@@ -147,10 +150,9 @@ function Zadani({ exercise, answer, showCorrect, showIncorrect }) {
 }
 
 function ButtonDigit({value, onAddDigit}) {
-  const [state, setState] = useState(value);
 
   function onClick() {
-    onAddDigit(state);
+    onAddDigit(value);
   }
 
   return (
