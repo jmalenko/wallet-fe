@@ -46,7 +46,7 @@ export default function App() {
   }, [exercise]);
 
   function onAddDigit(digit) {
-    if (state != STATE_THINKING) return;
+    if (state !== STATE_THINKING) return;
 
     // console.log("Add digit: " + answer + " + " + digit);
     if (answer.length < MAX_LENGTH || answer.length < exercise.zadani[exercise.neznama].toString().length) {
@@ -55,13 +55,13 @@ export default function App() {
   }
 
   function onSubmit() {
-    if (state != STATE_THINKING) return;
-    if (answer.length == 0) return; // TODO show message
+    if (state !== STATE_THINKING) return;
+    if (answer.length === 0) return; // TODO show message
 
     setState(STATE_ANSWERED);
     const expectedAnswer =  Number(exercise.zadani[Number(exercise.neznama)])
     const actualAnswer = Number(answer)
-    const correct = expectedAnswer == actualAnswer
+    const correct = expectedAnswer === actualAnswer
     console.log("Expected answer: " + expectedAnswer + ", actual answer: " + actualAnswer + ", correct: " + correct);
     if (correct) {
       setResult(RESULT_CORRECT);
@@ -90,7 +90,7 @@ export default function App() {
   }
 
   function onDelete() {
-    if (state != STATE_THINKING) return;
+    if (state !== STATE_THINKING) return;
 
     // console.log("Clear answer");
     setAnswer(EMPTY);
@@ -111,7 +111,7 @@ export default function App() {
   }, [answer]);
 
   const onKeyDown = (event) => {
-    if (state != STATE_THINKING) return;
+    if (state !== STATE_THINKING) return;
 
     if (isFinite(event.key)) // test for a digit
       onAddDigit(event.key);
@@ -125,7 +125,7 @@ export default function App() {
 
   return (
     <main>
-      <Zadani exercise={exercise} answer={answer} showCorrect={result == RESULT_CORRECT} showIncorrect={result == RESULT_INCORRECT} />
+      <Zadani exercise={exercise} answer={answer} showCorrect={result === RESULT_CORRECT} showIncorrect={result === RESULT_INCORRECT} />
 
       <div id="tlacitka">
         <ButtonDigit value={1} onAddDigit={onAddDigit} />
@@ -157,7 +157,7 @@ function Zadani({ exercise, answer, showCorrect, showIncorrect }) {
   return (
     <div id="zadani">
       {exercise != null && Object.keys(exercise.zadani).map(i => (
-        i == exercise.neznama ? (
+        i === exercise.neznama ? (
           <span key={i} className="neznama_wrapper">
             <span id="neznama">
               <span>{answer}</span>
@@ -192,7 +192,7 @@ function ButtonSubmit({onSubmit}) {
       className="icon"
       onClick={onSubmit}
       src="/images/send_24dp_FILL0_wght400_GRAD0_opsz24.svg"
-    ></img>
+      alt="Submit" />
   );
 }
 
@@ -203,7 +203,7 @@ function ButtonDelete({onDelete}) {
       className="icon"
       onClick={onDelete}
       src="/images/backspace_24dp_FILL0_wght400_GRAD0_opsz24.svg"
-    ></img>
+      alt="Delete" />
   );
 }
 
@@ -214,7 +214,7 @@ function ButtonMenu({ onShowMenu }) {
       className="icon"
       onClick={onShowMenu}
       src="/images/menu_24dp_FILL0_wght400_GRAD0_opsz24.svg"
-    ></img>
+      alt="Menu" />
   );
 }
 
@@ -223,7 +223,7 @@ function IconCorrect({ isVisible }) {
     <img
       id="correct"
       src="/images/check_24dp_FILL0_wght400_GRAD0_opsz24.svg"
-    ></img>
+      alt="Correct" />
   ) : (
     <></>
   );
@@ -234,7 +234,7 @@ function IconIncorrect({ isVisible }) {
     <img
       id="incorrect"
       src="/images/close_24dp_FILL0_wght400_GRAD0_opsz24.svg"
-    ></img>
+      alt="Incorrect" />
   ) : (
     <></>
   );
