@@ -185,12 +185,25 @@ export default function App() {
 }
 
 function Zadani({ exercise, answer, showCorrect, showIncorrect }) {
+  // Experimentally set the font-size
+  //   exercise.zadani.length     font-size
+  //   5                          17
+  //   7                          13
+  //   9                           9
+  const fontSize1 = 17;
+  const length1 = 5;
+  const deltaPerUnitLength = -2;
+
+  let fontSize = exercise == null ? fontSize1 : (exercise.zadani.length - length1) * deltaPerUnitLength + fontSize1;
+  // console.debug("Zadani font-size: " + fontSize);
+  const neznamaHeight = fontSize + 3;
+
   return (
-    <div id="zadani">
+    <div id="zadani" style={{"fontSize": fontSize + "vw"}}>
       {exercise != null && Object.keys(exercise.zadani).map(i => (
         i == exercise.neznama ? (
           <span key={i} className="neznama_wrapper">
-            <span id="neznama">
+            <span id="neznama" style={{"height": neznamaHeight + "vw"}}>
               <span>{answer}</span>
             </span>
             <IconCorrect isVisible={showCorrect}/>
