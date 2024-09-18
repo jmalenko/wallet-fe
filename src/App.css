@@ -223,5 +223,6 @@ main {
     left: 3vw;
     right: 3vw;
     bottom: 93vmin;
+    font-size: 5vw;
   }
 }
