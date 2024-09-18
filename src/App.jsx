@@ -197,6 +197,7 @@ function Zadani({ exercise, answer, showCorrect, showIncorrect }) {
   let fontSize = exercise == null ? fontSize1 : (exercise.zadani.length - length1) * deltaPerUnitLength + fontSize1;
   // console.debug("Zadani font-size: " + fontSize);
   const neznamaHeight = fontSize + 3;
+  // TODO Other dimensions should be adjusted as well: position of correct/incorrect icons, vertical position of exercise
 
   return (
     <div id="zadani" style={{"fontSize": fontSize + "vw"}}>
