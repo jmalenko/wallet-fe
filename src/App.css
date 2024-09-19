@@ -97,6 +97,16 @@ main {
   text-align: center;
 }
 
+#loading {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  -webkit-transform: translate(-50%, -40%);
+  transform: translate(-50%, -40%);
+
+  text-align: center;
+}
+
 @media not screen and (orientation: portrait) and (max-width: 800px) {
   #zadani {
     top: calc((100%   - 3vw  - 7vw  - 3vw  - 17vw - 5vw) / 2);
@@ -224,5 +234,9 @@ main {
     right: 3vw;
     bottom: 93vmin;
     font-size: 5vw;
+  }
+
+  #loading {
+    font-size: 6vw;
   }
 }

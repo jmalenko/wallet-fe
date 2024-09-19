@@ -1,6 +1,6 @@
 import "./App.css";
-import { useState, useEffect} from "react";
-import { useParams } from 'react-router-dom';
+import {useState, useEffect, useRef} from "react";
+import {useNavigate, useParams} from 'react-router-dom';
 
 export default function App() {
   const EMPTY = "";
@@ -8,6 +8,7 @@ export default function App() {
 
   const STATE_THINKING = 1;
   const STATE_ANSWERED = 2;
+  const STATE_LOADING = 3;
 
   const RESULT_NOT_DEFINED = 0;
   const RESULT_CORRECT = 1;
@@ -16,15 +17,17 @@ export default function App() {
   const INDICATOR_TIMEOUT = 2000;
   const STATUS_TIMEOUT = 3000;
 
+  const state = useRef(STATE_LOADING);
+
   const [exercise, setExercise] = useState();
   const [answer, setAnswer] = useState(EMPTY);
-  const [state, setState] = useState(STATE_THINKING);
+
   const [result, setResult] = useState(RESULT_NOT_DEFINED);
   const [exerciseNext, setExerciseNext] = useState();
 
   // const [menuVisible, setMenuVisible] = useState(false);
   const [incorrectAnswers, setIncorrectAnswers] = useState([]); // Incorrect answers for the current exercise
-  const [timeFrom, setTimeFrom] = useState(new Date());
+  const [timeFrom, setTimeFrom] = useState();
   const [history, setHistory] = useState([]);
 
   let { trida } = useParams();
@@ -37,9 +40,11 @@ export default function App() {
         return res.json();
       })
       .then((data) => {
-        if (!exercise) { // 1st exercise
+        if (state.current == STATE_LOADING) { // 1st exercise
           console.log("New exercise: " + JSON.stringify(data));
+          state.current = STATE_THINKING;
           setExercise(data);
+          setTimeFrom(new Date());
         } else { // use this exercise after the current exercise
           console.log("Next exercise: " + JSON.stringify(data));
           setExerciseNext(data);
@@ -48,7 +53,7 @@ export default function App() {
   }, [exercise]);
 
   function onAddDigit(digit) {
-    if (state !== STATE_THINKING) return;
+    if (state.current != STATE_THINKING) return;
 
     // console.log("Add digit: " + answer + " + " + digit);
     if (answer.length < MAX_LENGTH || answer.length < exercise.zadani[exercise.neznama].toString().length) {
@@ -59,13 +64,13 @@ export default function App() {
   }
 
   function onSubmit() {
-    if (state !== STATE_THINKING) return;
+    if (state.current != STATE_THINKING) return;
     if (answer.length === 0) {
       setMessage("Musíš zadat číslo")
       return
     }
 
-    setState(STATE_ANSWERED);
+    state.current = STATE_ANSWERED;
     const expectedAnswer =  Number(exercise.zadani[Number(exercise.neznama)])
     const actualAnswer = Number(answer)
     const correct = expectedAnswer === actualAnswer
@@ -79,17 +84,24 @@ export default function App() {
       setTimeout(() => {
         setState(STATE_THINKING);
         setAnswer(EMPTY);
-        setExercise(exerciseNext);
         setResult(RESULT_NOT_DEFINED);
         setIncorrectAnswers([]);
-        setTimeFrom(new Date());
+        if (exerciseNext != null) {
+          state.current = STATE_THINKING;
+          setExercise(exerciseNext);
+          setExerciseNext(null);
+          setTimeFrom(new Date());
+        } else {
+          console.log("Loading exercise");
+          state.current = STATE_LOADING;
+        }
       },  INDICATOR_TIMEOUT);
     } else {
       setResult(RESULT_INCORRECT);
       setIncorrectAnswers(incorrectAnswers + 1);
 
       setTimeout(() => {
-        setState(STATE_THINKING);
+        state.current = STATE_THINKING;
         setAnswer(EMPTY);
         setResult(RESULT_NOT_DEFINED);
       },  INDICATOR_TIMEOUT);
@@ -97,7 +109,7 @@ export default function App() {
   }
 
   function onDelete() {
-    if (state !== STATE_THINKING) return;
+    if (state.current !== STATE_THINKING) return;
 
     // console.log("Clear answer");
     setAnswer(EMPTY);
@@ -140,7 +152,7 @@ export default function App() {
   }, [answer]);
 
   const onKeyDown = (event) => {
-    if (state !== STATE_THINKING) return;
+    if (state.current !== STATE_THINKING) return;
 
     if (isFinite(event.key)) // test for a digit
       onAddDigit(event.key);
@@ -152,7 +164,13 @@ export default function App() {
       onSubmit()
   }
 
-  return (
+  let cviceniNazev = "TODO Název cvičení";
+
+  return state.current == STATE_LOADING ? (
+    <main>
+      <LoadingScreen title={cviceniNazev} text="Nahrávám cvičení" />
+    </main>
+    ) : (
     <main>
       <Zadani exercise={exercise} answer={answer} showCorrect={result === RESULT_CORRECT} showIncorrect={result === RESULT_INCORRECT} />
 
@@ -282,6 +300,15 @@ function IconIncorrect({ isVisible }) {
       alt="Incorrect" />
   ) : (
     <></>
+  );
+}
+
+function LoadingScreen({title, text}) {
+  return (
+    <div id="loading">
+      <h3>{title}</h3>
+      <p>{text}</p>
+    </div>
   );
 }
 
