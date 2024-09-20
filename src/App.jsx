@@ -10,10 +10,6 @@ export default function App() {
   const STATE_ANSWERED = 2;
   const STATE_LOADING = 3;
 
-  const RESULT_NOT_DEFINED = 0;
-  const RESULT_CORRECT = 1;
-  const RESULT_INCORRECT = 2;
-
   const INDICATOR_TIMEOUT = 2000;
   const STATUS_TIMEOUT = 3000;
 
@@ -23,7 +19,6 @@ export default function App() {
   const [exercise, setExercise] = useState();
   const [answer, setAnswer] = useState();
 
-  const [result, setResult] = useState(RESULT_NOT_DEFINED);
   const [exerciseNext, setExerciseNext] = useState();
 
   // const [menuVisible, setMenuVisible] = useState(false);
@@ -77,12 +72,9 @@ export default function App() {
     }
 
     state.current = STATE_ANSWERED;
-    const expectedAnswer =  Number(exercise.zadani[Number(exercise.neznama)])
-    const actualAnswer = Number(answer)
-    const correct = expectedAnswer === actualAnswer
-    console.log(correct ? "Correct" : "Incorrect. Expected answer: " + expectedAnswer + ", actual answer: " + actualAnswer);
-    if (correct) {
-      setResult(RESULT_CORRECT);
+    if (isCorrect()) {
+      console.log("Correct answer");
+
       const timeTo = new Date();
       const timeDiff = timeTo.getTime() - timeFrom.getTime();
       setHistory([...history, [exercise, incorrectAnswers, timeDiff]]);
@@ -90,7 +82,6 @@ export default function App() {
       setTimeout(() => {
         setState(STATE_THINKING);
         setAnswer(EMPTY);
-        setResult(RESULT_NOT_DEFINED);
         setIncorrectAnswers([]);
         if (exerciseNextRef.current != null) {
           state.current = STATE_THINKING;
@@ -103,13 +94,15 @@ export default function App() {
         }
       },  INDICATOR_TIMEOUT);
     } else {
-      setResult(RESULT_INCORRECT);
+      let expectedAnswer =  Number(exercise.zadani[Number(exercise.neznama)]);
+      let actualAnswer = Number(answer);
+      console.log("Incorrect answer. Expected: " + expectedAnswer + ", actual: " + actualAnswer);
+
       setIncorrectAnswers(incorrectAnswers + 1);
 
       setTimeout(() => {
         state.current = STATE_THINKING;
         setAnswer(EMPTY);
-        setResult(RESULT_NOT_DEFINED);
       },  INDICATOR_TIMEOUT);
     }
   }
@@ -127,7 +120,7 @@ export default function App() {
     // element.style.visibility = menuVisible ? "visible" : "hidden";
   }
 
-  // Status
+  // Message
 
   let timeout = null;
 
@@ -172,13 +165,25 @@ export default function App() {
 
   let cviceniNazev = "TODO Název cvičení";
 
+  function isCorrect() {
+    if (state == STATE_LOADING)
+      return false;
+
+    let expectedAnswer =  Number(exercise.zadani[Number(exercise.neznama)]);
+    let actualAnswer = Number(answer);
+    let correct = expectedAnswer === actualAnswer;
+    return correct
+  }
+
   return state.current === STATE_LOADING ? (
     <main>
       <LoadingScreen title={cviceniNazev} text="Nahrávám cvičení" />
     </main>
     ) : (
     <main>
-      <Zadani exercise={exercise} answer={answer} showCorrect={result === RESULT_CORRECT} showIncorrect={result === RESULT_INCORRECT} />
+      <Zadani exercise={exercise} answer={answer}
+              showCorrect={state.current == STATE_ANSWERED && isCorrect()}
+              showIncorrect={state.current == STATE_ANSWERED && !isCorrect()} />
 
       <div id="tlacitka">
         <ButtonDigit value={1} onAddDigit={onAddDigit} />
