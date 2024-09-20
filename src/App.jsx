@@ -18,6 +18,7 @@ export default function App() {
   const STATUS_TIMEOUT = 3000;
 
   const state = useRef(STATE_LOADING);
+  const exerciseNextRef = useRef();
 
   const [exercise, setExercise] = useState();
   const [answer, setAnswer] = useState();
@@ -53,6 +54,10 @@ export default function App() {
       });
   }, [exercise]);
 
+  useEffect(() => {
+    exerciseNextRef.current = exerciseNext;
+  }, [exerciseNext]);
+
   function onAddDigit(digit) {
     if (state.current != STATE_THINKING) return;
 
@@ -87,9 +92,9 @@ export default function App() {
         setAnswer(EMPTY);
         setResult(RESULT_NOT_DEFINED);
         setIncorrectAnswers([]);
-        if (exerciseNext != null) {
+        if (exerciseNextRef.current != null) {
           state.current = STATE_THINKING;
-          setExercise(exerciseNext);
+          setExercise(exerciseNextRef.current);
           setExerciseNext(null);
           setTimeFrom(new Date());
         } else {
