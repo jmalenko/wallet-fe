@@ -3,11 +3,13 @@ import {useState, useEffect} from "react";
 import {useNavigate} from 'react-router-dom';
 
 export default function Welcome() {
-  const [predmet, setPredmet] = useState("matematika");
   const [seznamTridy, setSeznamTridy] = useState();
   const [seznamCviceni, setSeznamCviceni] = useState();
+
+  const [predmet, setPredmet] = useState("matematika");
   const [trida, setTrida] = useState();
   const [cviceni, setCviceni] = useState();
+
   let navigate = useNavigate();
 
   useEffect(() => {
