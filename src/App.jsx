@@ -172,7 +172,7 @@ export default function App() {
 
   let cviceniNazev = "TODO Název cvičení";
 
-  return state.current == STATE_LOADING ? (
+  return state.current === STATE_LOADING ? (
     <main>
       <LoadingScreen title={cviceniNazev} text="Nahrávám cvičení" />
     </main>
