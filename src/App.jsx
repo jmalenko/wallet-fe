@@ -20,7 +20,7 @@ export default function App() {
   const state = useRef(STATE_LOADING);
 
   const [exercise, setExercise] = useState();
-  const [answer, setAnswer] = useState(EMPTY);
+  const [answer, setAnswer] = useState();
 
   const [result, setResult] = useState(RESULT_NOT_DEFINED);
   const [exerciseNext, setExerciseNext] = useState();
@@ -44,6 +44,7 @@ export default function App() {
           console.log("New exercise: " + JSON.stringify(data));
           state.current = STATE_THINKING;
           setExercise(data);
+          setAnswer(EMPTY);
           setTimeFrom(new Date());
         } else { // use this exercise after the current exercise
           console.log("Next exercise: " + JSON.stringify(data));
