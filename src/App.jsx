@@ -13,6 +13,7 @@ export default function App() {
   const STATE_ANSWERED = 2;
   const STATE_LOADING = 3;
   const STATE_LOADING_NEXT = 4;
+  const STATE_END = 5;
 
   const INDICATOR_TIMEOUT = 2000;
   const STATUS_TIMEOUT = 3000;
@@ -33,8 +34,8 @@ export default function App() {
   const [message, setMessage] = useState();
 
   const [predmet, setPredmet] = useState("matematika");
-  let { trida } = useParams();
-  let { cviceni } = useParams();
+  let {trida} = useParams();
+  let {cviceni} = useParams();
 
   let navigate = useNavigate();
   let fetchAbortController;
@@ -50,7 +51,7 @@ export default function App() {
     }
 
     fetchAbortController = new AbortController();
-    fetch('http://localhost:8000/' + predmet + '/' + trida + '/' + cviceni_, { signal: fetchAbortController.signal })
+    fetch('http://localhost:8000/' + predmet + '/' + trida + '/' + cviceni_, {signal: fetchAbortController.signal})
       .then((res) => {
         return res.json();
       })
@@ -117,25 +118,31 @@ export default function App() {
       setTimeout(() => {
         if (moveToNextLevel_) {
           console.log("Timeout for answer indicator");
-          state.current = STATE_LOADING_NEXT;
           if (cviceniNextRef.current != null) {
-            navigate("/" + predmet + "/" + trida + "/" + cviceniNextRef.current.id);
-            setTimeout(() => {
-              console.log("Timeout for loading screen");
-              if (exerciseNextRef.current != null) {
-                state.current = STATE_THINKING;
-                setExercise(exerciseNextRef.current);
-                setExerciseNext(null);
-                setAnswer(EMPTY);
-                setIncorrectAnswers([]);
-                setTimeFrom(new Date());
+            if (cviceniNextRef.current.end) {
+              console.log("This was the last exercise");
+              state.current = STATE_END;
+              setExerciseNext(null); // set some state variable to force rerender
+            } else {
+              state.current = STATE_LOADING_NEXT;
+              navigate("/" + predmet + "/" + trida + "/" + cviceniNextRef.current.id);
+              setTimeout(() => {
+                console.log("Timeout for loading screen");
+                if (exerciseNextRef.current != null) {
+                  state.current = STATE_THINKING;
+                  setExercise(exerciseNextRef.current);
+                  setExerciseNext(null);
+                  setAnswer(EMPTY);
+                  setIncorrectAnswers([]);
+                  setTimeFrom(new Date());
 
-                setHistory([]);
-                cviceniNextRef.current = null;
-              } else {
-                state.current = STATE_LOADING;
-              }
-            },  INDICATOR_TIMEOUT);
+                  setHistory([]);
+                  cviceniNextRef.current = null;
+                } else {
+                  state.current = STATE_LOADING;
+                }
+              }, INDICATOR_TIMEOUT);
+            }
           } else {
             console.log("TODO");
             // TODO may not be loaded
@@ -154,9 +161,9 @@ export default function App() {
           console.log("Loading exercise");
           state.current = STATE_LOADING;
         }
-      },  INDICATOR_TIMEOUT);
+      }, INDICATOR_TIMEOUT);
     } else {
-      let expectedAnswer =  Number(exercise.zadani[Number(exercise.neznama)]);
+      let expectedAnswer = Number(exercise.zadani[Number(exercise.neznama)]);
       let actualAnswer = Number(answer);
       console.log("Incorrect answer. Expected: " + expectedAnswer + ", actual: " + actualAnswer);
 
@@ -165,15 +172,15 @@ export default function App() {
       setTimeout(() => {
         state.current = STATE_THINKING;
         setAnswer(EMPTY);
-      },  INDICATOR_TIMEOUT);
+      }, INDICATOR_TIMEOUT);
     }
   }
 
   function isCorrect() {
-    if (! [STATE_THINKING, STATE_ANSWERED].includes(state.current))
+    if (![STATE_THINKING, STATE_ANSWERED].includes(state.current))
       return false;
 
-    let expectedAnswer =  Number(exercise.zadani[Number(exercise.neznama)]);
+    let expectedAnswer = Number(exercise.zadani[Number(exercise.neznama)]);
     let actualAnswer = Number(answer);
     let correct = expectedAnswer === actualAnswer;
     return correct
@@ -181,7 +188,7 @@ export default function App() {
 
   function moveToNextLevel(incorrectAnswersCurrent) {
     if (history.length + 1 < NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL)
-        return false;
+      return false;
 
     let correct = 0;
     let correctString = "";
@@ -214,10 +221,7 @@ export default function App() {
       .then((data) => {
         console.log("Next level is: " + JSON.stringify(data));
         cviceniNextRef.current = data;
-        if (data.id == null) {
-          console.log("TODO");
-          // TODO Show "Vyborne jsi dokoncil vsechna cviceni. Gratulujeme! Muzes pokracovat dalsi tridou."
-        } else {
+        if (!data.end) {
           fetchExercise(data.id);
         }
       });
@@ -281,28 +285,32 @@ export default function App() {
 
   return [STATE_LOADING, STATE_LOADING_NEXT].includes(state.current) ? (
     <main>
-      <LoadingScreen title={cviceniNextRef.current ? cviceniNextRef.current.nazev : "X"} text="Nahrávám cvičení" />
+      <LoadingScreen title={cviceniNextRef.current ? cviceniNextRef.current.nazev : "X"} text="Nahrávám cvičení"/>
     </main>
-    ) : (
+  ) : state.current == STATE_END ? (
+    <main>
+      <EndScreen/>
+    </main>
+  ) : (
     <main>
       <Zadani exercise={exercise} answer={answer}
               showCorrect={state.current == STATE_ANSWERED && isCorrect()}
-              showIncorrect={state.current == STATE_ANSWERED && !isCorrect()} />
+              showIncorrect={state.current == STATE_ANSWERED && !isCorrect()}/>
 
       <div id="tlacitka">
-        <ButtonDigit value={1} onAddDigit={onAddDigit} />
-        <ButtonDigit value={2} onAddDigit={onAddDigit} />
-        <ButtonDigit value={3} onAddDigit={onAddDigit} />
-        <ButtonDigit value={4} onAddDigit={onAddDigit} />
-        <ButtonDigit value={5} onAddDigit={onAddDigit} />
-        <ButtonDigit value={6} onAddDigit={onAddDigit} />
-        <ButtonDigit value={7} onAddDigit={onAddDigit} />
-        <ButtonDigit value={8} onAddDigit={onAddDigit} />
-        <ButtonDigit value={9} onAddDigit={onAddDigit} />
-        <ButtonDigit value={0} onAddDigit={onAddDigit} />
+        <ButtonDigit value={1} onAddDigit={onAddDigit}/>
+        <ButtonDigit value={2} onAddDigit={onAddDigit}/>
+        <ButtonDigit value={3} onAddDigit={onAddDigit}/>
+        <ButtonDigit value={4} onAddDigit={onAddDigit}/>
+        <ButtonDigit value={5} onAddDigit={onAddDigit}/>
+        <ButtonDigit value={6} onAddDigit={onAddDigit}/>
+        <ButtonDigit value={7} onAddDigit={onAddDigit}/>
+        <ButtonDigit value={8} onAddDigit={onAddDigit}/>
+        <ButtonDigit value={9} onAddDigit={onAddDigit}/>
+        <ButtonDigit value={0} onAddDigit={onAddDigit}/>
 
-        <ButtonSubmit onSubmit={onSubmit} />
-        <ButtonDelete onDelete={onDelete} />
+        <ButtonSubmit onSubmit={onSubmit}/>
+        <ButtonDelete onDelete={onDelete}/>
       </div>
 
       <ButtonMenu onShowMenu={onShowMenu} />
@@ -317,7 +325,7 @@ export default function App() {
   );
 }
 
-function Zadani({ exercise, answer, showCorrect, showIncorrect }) {
+function Zadani({exercise, answer, showCorrect, showIncorrect}) {
   // Experimentally set the font-size
   //   exercise.zadani.length     font-size
   //   5                          17
@@ -370,7 +378,7 @@ function ButtonSubmit({onSubmit}) {
       className="icon"
       onClick={onSubmit}
       src="/images/send_24dp_FILL0_wght400_GRAD0_opsz24.svg"
-      alt="Submit" />
+      alt="Submit"/>
   );
 }
 
@@ -381,7 +389,7 @@ function ButtonDelete({onDelete}) {
       className="icon"
       onClick={onDelete}
       src="/images/backspace_24dp_FILL0_wght400_GRAD0_opsz24.svg"
-      alt="Delete" />
+      alt="Delete"/>
   );
 }
 
@@ -396,23 +404,23 @@ function ButtonMenu({ onShowMenu }) {
   );
 }
 
-function IconCorrect({ isVisible }) {
+function IconCorrect({isVisible}) {
   return isVisible ? (
     <img
       id="correct"
       src="/images/check_24dp_FILL0_wght400_GRAD0_opsz24.svg"
-      alt="Correct" />
+      alt="Correct"/>
   ) : (
     <></>
   );
 }
 
-function IconIncorrect({ isVisible }) {
+function IconIncorrect({isVisible}) {
   return isVisible ? (
     <img
       id="incorrect"
       src="/images/close_24dp_FILL0_wght400_GRAD0_opsz24.svg"
-      alt="Incorrect" />
+      alt="Incorrect"/>
   ) : (
     <></>
   );
@@ -424,6 +432,27 @@ function LoadingScreen({title, text}) {
       <p>Výborně! Postupuješ na další cvičení.</p>
       <h3>{title}</h3>
       <p>{text}</p>
+    </div>
+  );
+}
+
+function EndScreen() {
+  let navigate = useNavigate();
+
+  function onClick() {
+    navigate("/");
+  }
+
+  return (
+    <div id="loading">
+      <p>Výborně!</p>
+      <p>Vyřešil jsi všechna cvičení v této třídě.</p>
+
+      <img
+        className="icon"
+        onClick={onClick}
+        src="/images/send_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+        alt="Přejít na začátek"/>
     </div>
   );
 }
