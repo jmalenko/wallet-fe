@@ -169,6 +169,16 @@ export default function App() {
     }
   }
 
+  function isCorrect() {
+    if (! [STATE_THINKING, STATE_ANSWERED].includes(state.current))
+      return false;
+
+    let expectedAnswer =  Number(exercise.zadani[Number(exercise.neznama)]);
+    let actualAnswer = Number(answer);
+    let correct = expectedAnswer === actualAnswer;
+    return correct
+  }
+
   function moveToNextLevel(incorrectAnswersCurrent) {
     if (history.length + 1 < NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL)
         return false;
@@ -270,16 +280,6 @@ export default function App() {
   }
 
   let cviceniNazev = "TODO Název cvičení " + cviceni + "<br/>" + state.current;
-
-  function isCorrect() {
-    if (! [STATE_THINKING, STATE_ANSWERED].includes(state.current))
-      return false;
-
-    let expectedAnswer =  Number(exercise.zadani[Number(exercise.neznama)]);
-    let actualAnswer = Number(answer);
-    let correct = expectedAnswer === actualAnswer;
-    return correct
-  }
 
   return [STATE_LOADING, STATE_LOADING_NEXT].includes(state.current) ? (
     <main>
