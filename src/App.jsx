@@ -38,7 +38,7 @@ export default function App() {
 
   let navigate = useNavigate();
   let fetchAbortController;
-  let cviceniNext = null;
+  const cviceniNextRef = useRef();
 
   useEffect(() => {
     fetchExercise(cviceni);
@@ -118,9 +118,8 @@ export default function App() {
         if (moveToNextLevel_) {
           console.log("Timeout for answer indicator");
           state.current = STATE_LOADING_NEXT;
-          if (cviceniNext != null) {
-            console.log("cviceniNext = " + cviceniNext);
-            navigate("/" + predmet + "/" + trida + "/" + cviceniNext);
+          if (cviceniNextRef.current != null) {
+            navigate("/" + predmet + "/" + trida + "/" + cviceniNextRef.current.id);
             setTimeout(() => {
               console.log("Timeout for loading screen");
               if (exerciseNextRef.current != null) {
@@ -132,6 +131,7 @@ export default function App() {
                 setTimeFrom(new Date());
 
                 setHistory([]);
+                cviceniNextRef.current = null;
               } else {
                 state.current = STATE_LOADING;
               }
@@ -202,7 +202,7 @@ export default function App() {
     }
 
     let moveToNextLevel = NUMBER_OF_CORRECT_EXERCISES_TO_GET_TO_NEXT_LEVEL <= correct;
-    console.log((moveToNextLevel ? "Move to next level" : "Don't move to next level") + ". Correct " + correct + " vs " + NUMBER_OF_CORRECT_EXERCISES_TO_GET_TO_NEXT_LEVEL + ", summary: " + correctString);
+    console.log((moveToNextLevel ? "Move to next level" : "Don't move to next level") + ". Correct " + correct + " out of " + NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL + ", min is " + NUMBER_OF_CORRECT_EXERCISES_TO_GET_TO_NEXT_LEVEL + ", summary: " + correctString);
     return moveToNextLevel;
   }
 
@@ -213,12 +213,12 @@ export default function App() {
       })
       .then((data) => {
         console.log("Next level is: " + JSON.stringify(data));
-        cviceniNext = data;
-        if (data == "END") {
+        cviceniNextRef.current = data;
+        if (data.id == null) {
           console.log("TODO");
           // TODO Show "Vyborne jsi dokoncil vsechna cviceni. Gratulujeme! Muzes pokracovat dalsi tridou."
         } else {
-          fetchExercise(cviceniNext);
+          fetchExercise(data.id);
         }
       });
   }
@@ -279,11 +279,9 @@ export default function App() {
       onSubmit()
   }
 
-  let cviceniNazev = "TODO Název cvičení " + cviceni + "<br/>" + state.current;
-
   return [STATE_LOADING, STATE_LOADING_NEXT].includes(state.current) ? (
     <main>
-      <LoadingScreen title={cviceniNazev} text="Nahrávám cvičení" />
+      <LoadingScreen title={cviceniNextRef.current ? cviceniNextRef.current.nazev : "X"} text="Nahrávám cvičení" />
     </main>
     ) : (
     <main>
@@ -423,6 +421,7 @@ function IconIncorrect({ isVisible }) {
 function LoadingScreen({title, text}) {
   return (
     <div id="loading">
+      <p>Výborně! Postupuješ na další cvičení.</p>
       <h3>{title}</h3>
       <p>{text}</p>
     </div>

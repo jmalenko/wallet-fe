@@ -99,10 +99,11 @@ main {
 
 #loading {
   position: absolute;
-  left: 50%;
+  left: 3vw;
+  right: 3vw;
   top: 40%;
-  -webkit-transform: translate(-50%, -40%);
-  transform: translate(-50%, -40%);
+  -webkit-transform: translate(-0%, -40%);
+  transform: translate(-0%, -40%);
 
   text-align: center;
 }
