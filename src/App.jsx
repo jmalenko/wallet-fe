@@ -1,14 +1,18 @@
 import "./App.css";
-import {useState, useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useNavigate, useParams} from 'react-router-dom';
 
 export default function App() {
   const EMPTY = "";
   const MAX_LENGTH = 2;
 
+  const NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL = 10; // This is used with current state, so the state will have old value, the actual value is higher by 1.
+  const NUMBER_OF_CORRECT_EXERCISES_TO_GET_TO_NEXT_LEVEL = NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL - 1;
+
   const STATE_THINKING = 1;
   const STATE_ANSWERED = 2;
   const STATE_LOADING = 3;
+  const STATE_LOADING_NEXT = 4;
 
   const INDICATOR_TIMEOUT = 2000;
   const STATUS_TIMEOUT = 3000;
@@ -22,16 +26,31 @@ export default function App() {
   const [exerciseNext, setExerciseNext] = useState();
 
   // const [menuVisible, setMenuVisible] = useState(false);
-  const [incorrectAnswers, setIncorrectAnswers] = useState([]); // Incorrect answers for the current exercise
+  const [incorrectAnswers, setIncorrectAnswers] = useState(); // Incorrect answers for the current exercise
   const [timeFrom, setTimeFrom] = useState();
   const [history, setHistory] = useState([]);
 
-  let { trida } = useParams();
-  let { cviceni } = useParams();
   const [message, setMessage] = useState();
 
+  const [predmet, setPredmet] = useState("matematika");
+  let { trida } = useParams();
+  let { cviceni } = useParams();
+
+  let navigate = useNavigate();
+  let fetchAbortController;
+  let cviceniNext = null;
+
   useEffect(() => {
-    fetch('http://localhost:8000/matematika/' + trida + '/' + cviceni)
+    fetchExercise(cviceni);
+  }, [exercise]);
+
+  function fetchExercise(cviceni_) {
+    if (fetchAbortController) {
+      console.error('Logical error: The next fetch must not happen before the current ends. ', err);
+    }
+
+    fetchAbortController = new AbortController();
+    fetch('http://localhost:8000/' + predmet + '/' + trida + '/' + cviceni_, { signal: fetchAbortController.signal })
       .then((res) => {
         return res.json();
       })
@@ -41,13 +60,21 @@ export default function App() {
           state.current = STATE_THINKING;
           setExercise(data);
           setAnswer(EMPTY);
+          setIncorrectAnswers([]);
           setTimeFrom(new Date());
         } else { // use this exercise after the current exercise
           console.log("Next exercise: " + JSON.stringify(data));
           setExerciseNext(data);
         }
-      });
-  }, [exercise]);
+      })
+      .catch(err => {
+        if (err.name === 'AbortError') {
+          console.log('Fetch request was canceled');
+        } else {
+          console.error('Fetch error: ', err);
+        }
+      })
+  }
 
   useEffect(() => {
     exerciseNextRef.current = exerciseNext;
@@ -79,14 +106,49 @@ export default function App() {
       const timeDiff = timeTo.getTime() - timeFrom.getTime();
       setHistory([...history, [exercise, incorrectAnswers, timeDiff]]);
 
+      let moveToNextLevel_ = moveToNextLevel(incorrectAnswers);
+      if (moveToNextLevel_) {
+        console.log("Next level");
+        if (fetchAbortController)
+          fetchAbortController.abort();
+        getNextLevel();
+      }
+
       setTimeout(() => {
-        setState(STATE_THINKING);
-        setAnswer(EMPTY);
-        setIncorrectAnswers([]);
+        if (moveToNextLevel_) {
+          console.log("Timeout for answer indicator");
+          state.current = STATE_LOADING_NEXT;
+          if (cviceniNext != null) {
+            console.log("cviceniNext = " + cviceniNext);
+            navigate("/" + predmet + "/" + trida + "/" + cviceniNext);
+            setTimeout(() => {
+              console.log("Timeout for loading screen");
+              if (exerciseNextRef.current != null) {
+                state.current = STATE_THINKING;
+                setExercise(exerciseNextRef.current);
+                setExerciseNext(null);
+                setAnswer(EMPTY);
+                setIncorrectAnswers([]);
+                setTimeFrom(new Date());
+
+                setHistory([]);
+              } else {
+                state.current = STATE_LOADING;
+              }
+            },  INDICATOR_TIMEOUT);
+          } else {
+            console.log("TODO");
+            // TODO may not be loaded
+          }
+          return;
+        }
+
         if (exerciseNextRef.current != null) {
           state.current = STATE_THINKING;
           setExercise(exerciseNextRef.current);
           setExerciseNext(null);
+          setAnswer(EMPTY);
+          setIncorrectAnswers([]);
           setTimeFrom(new Date());
         } else {
           console.log("Loading exercise");
@@ -98,13 +160,57 @@ export default function App() {
       let actualAnswer = Number(answer);
       console.log("Incorrect answer. Expected: " + expectedAnswer + ", actual: " + actualAnswer);
 
-      setIncorrectAnswers(incorrectAnswers + 1);
+      setIncorrectAnswers([...incorrectAnswers, actualAnswer]);
 
       setTimeout(() => {
         state.current = STATE_THINKING;
         setAnswer(EMPTY);
       },  INDICATOR_TIMEOUT);
     }
+  }
+
+  function moveToNextLevel(incorrectAnswersCurrent) {
+    if (history.length + 1 < NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL)
+        return false;
+
+    let correct = 0;
+    let correctString = "";
+    for (let i = history.length - NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL + 1; i < history.length; i++) {
+      const incorrectAnswers2 = history[i][1].length;
+      if (incorrectAnswers2 === 0) {
+        correct++;
+        correctString += ".";
+      } else {
+        correctString += "X";
+      }
+    }
+    if (incorrectAnswersCurrent.length) {
+      correctString += "X";
+    } else {
+      correct++;
+      correctString += ".";
+    }
+
+    let moveToNextLevel = NUMBER_OF_CORRECT_EXERCISES_TO_GET_TO_NEXT_LEVEL <= correct;
+    console.log((moveToNextLevel ? "Move to next level" : "Don't move to next level") + ". Correct " + correct + " vs " + NUMBER_OF_CORRECT_EXERCISES_TO_GET_TO_NEXT_LEVEL + ", summary: " + correctString);
+    return moveToNextLevel;
+  }
+
+  function getNextLevel() {
+    fetch('http://localhost:8000/' + predmet + '/dalsi_cviceni/' + trida + '/' + cviceni)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log("Next level is: " + JSON.stringify(data));
+        cviceniNext = data;
+        if (data == "END") {
+          console.log("TODO");
+          // TODO Show "Vyborne jsi dokoncil vsechna cviceni. Gratulujeme! Muzes pokracovat dalsi tridou."
+        } else {
+          fetchExercise(cviceniNext);
+        }
+      });
   }
 
   function onDelete() {
@@ -163,10 +269,10 @@ export default function App() {
       onSubmit()
   }
 
-  let cviceniNazev = "TODO Název cvičení";
+  let cviceniNazev = "TODO Název cvičení " + cviceni + "<br/>" + state.current;
 
   function isCorrect() {
-    if (state == STATE_LOADING)
+    if (! [STATE_THINKING, STATE_ANSWERED].includes(state.current))
       return false;
 
     let expectedAnswer =  Number(exercise.zadani[Number(exercise.neznama)]);
@@ -175,7 +281,7 @@ export default function App() {
     return correct
   }
 
-  return state.current === STATE_LOADING ? (
+  return [STATE_LOADING, STATE_LOADING_NEXT].includes(state.current) ? (
     <main>
       <LoadingScreen title={cviceniNazev} text="Nahrávám cvičení" />
     </main>
