@@ -285,7 +285,9 @@ export default function App() {
 
   return [STATE_LOADING, STATE_LOADING_NEXT].includes(state.current) ? (
     <main>
-      <LoadingScreen title={cviceniNextRef.current ? cviceniNextRef.current.nazev : "X"} text="Nahrávám cvičení"/>
+      <LoadingScreen title={cviceniNextRef.current ? cviceniNextRef.current.nazev : ""}
+                     text1={state.current == STATE_LOADING_NEXT ? "Výborně! Postupuješ na další cvičení." : ""}
+                     text2="Nahrávám cvičení..."/>
     </main>
   ) : state.current == STATE_END ? (
     <main>
@@ -426,12 +428,12 @@ function IconIncorrect({isVisible}) {
   );
 }
 
-function LoadingScreen({title, text}) {
+function LoadingScreen({title, text1, text2}) {
   return (
     <div id="loading">
-      <p>Výborně! Postupuješ na další cvičení.</p>
+      <p>{text1}</p>
       <h3>{title}</h3>
-      <p>{text}</p>
+      <p>{text2}</p>
     </div>
   );
 }
