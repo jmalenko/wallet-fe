@@ -1,6 +1,7 @@
 import "./Welcome.css";
 import {useState, useEffect} from "react";
 import {useNavigate} from 'react-router-dom';
+import {CookiesProvider, useCookies} from 'react-cookie';
 
 export default function Welcome() {
   const [seznamTridy, setSeznamTridy] = useState();
@@ -10,7 +11,13 @@ export default function Welcome() {
   const [trida, setTrida] = useState();
   const [cviceni, setCviceni] = useState();
 
+  const [firstLoad, setFirstLoad] = useState(true);
+
   let navigate = useNavigate();
+
+  const [cookies, setCookie] = useCookies();
+
+  console.log("Next: trida=" + cookies.tridaNext + ", cviceni=" + cookies.cviceniNext);
 
   useEffect(() => {
     fetch('http://localhost:8000/' + predmet + '/seznam_tridy')
@@ -20,7 +27,9 @@ export default function Welcome() {
       .then((data) => {
         // console.log("Response: " + JSON.stringify(data));
         setSeznamTridy(data);
-        setTrida(Object.keys(data)[0]);
+        setTrida(firstLoad && cookies.tridaNext
+          ? cookies.tridaNext
+          : Object.keys(data)[0]);
       });
   }, []);
 
@@ -32,7 +41,10 @@ export default function Welcome() {
       .then((data) => {
         // console.log("Response: " + JSON.stringify(data));
         setSeznamCviceni(data);
-        setCviceni(Object.keys(data)[0]);
+        setCviceni((firstLoad && cookies.cviceniNext) || cookies.tridaNext == trida
+          ? cookies.cviceniNext
+          : Object.keys(data)[0]);
+        setFirstLoad(false);
       });
   }, [trida]);
 
@@ -65,7 +77,7 @@ export default function Welcome() {
         <tr>
           <td><label>Třída:</label></td>
           <td>
-            <select onChange={onChangeTrida}>{
+            <select onChange={onChangeTrida} value={trida}>{
               seznamTridy !== undefined && Object.keys(seznamTridy).map(id => (
                 <option key={id} value={id}>{seznamTridy[id]}</option>))
             }</select>
@@ -75,7 +87,7 @@ export default function Welcome() {
         <tr>
           <td><label>Cvičení:</label></td>
           <td>
-            <select onChange={onChangeCviceni}>{
+            <select onChange={onChangeCviceni} value={cviceni}>{
               seznamCviceni !== undefined && Object.keys(seznamCviceni).map(id => (
                 <option key={id} value={id}>{id}: {seznamCviceni[id]}</option>))
             }</select>

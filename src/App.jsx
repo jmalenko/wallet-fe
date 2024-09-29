@@ -1,6 +1,7 @@
 import "./App.css";
 import {useEffect, useRef, useState} from "react";
 import {useNavigate, useParams} from 'react-router-dom';
+import {CookiesProvider, useCookies} from 'react-cookie';
 
 export default function App() {
   const EMPTY = "";
@@ -40,6 +41,8 @@ export default function App() {
   let navigate = useNavigate();
   let fetchAbortController;
   const cviceniNextRef = useRef();
+
+  const [cookies, setCookie] = useCookies();
 
   useEffect(() => {
     fetchExercise(cviceni);
@@ -224,6 +227,9 @@ export default function App() {
         if (!data.end) {
           fetchExercise(data.id);
         }
+        console.log("Setting cookies: " + predmet + ", " + trida + ", " + cviceni);
+        setCookie("tridaNext", trida, {path: '/'});
+        setCookie("cviceniNext", data.id, {path: '/'});
       });
   }
 
