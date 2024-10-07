@@ -44,6 +44,8 @@ export default function App() {
 
   const [cookies, setCookie] = useCookies();
 
+  const server = true ? "http://localhost:8000" : "";
+
   useEffect(() => {
     fetchExercise(cviceni);
   }, [exercise]);
@@ -54,7 +56,7 @@ export default function App() {
     }
 
     fetchAbortController = new AbortController();
-    fetch('http://localhost:8000/' + predmet + '/' + trida + '/' + cviceni_, {signal: fetchAbortController.signal})
+    fetch(server + '/' + predmet + '/' + trida + '/' + cviceni_, {signal: fetchAbortController.signal})
       .then((res) => {
         return res.json();
       })
@@ -217,7 +219,7 @@ export default function App() {
   }
 
   function getNextLevel() {
-    fetch('http://localhost:8000/' + predmet + '/dalsi_cviceni/' + trida + '/' + cviceni)
+    fetch(server + '8000/' + predmet + '/dalsi_cviceni/' + trida + '/' + cviceni)
       .then((res) => {
         return res.json();
       })
