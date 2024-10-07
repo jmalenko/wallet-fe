@@ -56,7 +56,7 @@ export default function App() {
     }
 
     fetchAbortController = new AbortController();
-    fetch(server + '/' + predmet + '/' + trida + '/' + cviceni_, {signal: fetchAbortController.signal})
+    fetch(server + '/api/' + predmet + '/' + trida + '/' + cviceni_, {signal: fetchAbortController.signal})
       .then((res) => {
         return res.json();
       })
@@ -219,7 +219,7 @@ export default function App() {
   }
 
   function getNextLevel() {
-    fetch(server + '8000/' + predmet + '/dalsi_cviceni/' + trida + '/' + cviceni)
+    fetch(server + '/api/' + predmet + '/dalsi_cviceni/' + trida + '/' + cviceni)
       .then((res) => {
         return res.json();
       })

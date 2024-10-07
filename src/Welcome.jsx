@@ -22,7 +22,7 @@ export default function Welcome() {
   const server = true ? "http://localhost:8000" : "";
 
   useEffect(() => {
-    fetch(server + '/' + predmet + '/seznam_tridy')
+    fetch(server + '/api/' + predmet + '/seznam_tridy')
       .then((res) => {
         return res.json();
       })
@@ -36,7 +36,7 @@ export default function Welcome() {
   }, []);
 
   useEffect(() => {
-    fetch(server + '/' + predmet + '/seznam_cviceni/' + (trida || 1))
+    fetch(server + '/api/' + predmet + '/seznam_cviceni/' + (trida || 1))
       .then((res) => {
         return res.json();
       })
