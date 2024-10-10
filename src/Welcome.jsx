@@ -1,4 +1,3 @@
-import "./Welcome.css";
 import {useState, useEffect} from "react";
 import {useNavigate} from 'react-router-dom';
 import {CookiesProvider, useCookies} from 'react-cookie';

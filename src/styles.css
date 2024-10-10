@@ -109,6 +109,10 @@ main {
 }
 
 @media not screen and (orientation: portrait) and (max-width: 800px) {
+  main {
+    font-size: 6vw;
+  }
+
   #zadani {
     top: calc((100%   - 3vw  - 7vw  - 3vw  - 17vw - 5vw) / 2);
          /*    screen top    button bottom font     megic  equal
@@ -141,7 +145,11 @@ main {
   }
 }
 
-@media screen and (orientation: portrait) and (max-width: 900px) {
+@media screen and (orientation: portrait) and (max-width: 800px) {
+  main {
+    font-size: 8vw;
+  }
+
   #zadani {
     top: calc((100%   - 72vmin   - 20vw - 3vw  - 18vw - 4vw) / 2);
          /*    screen top button button top    font     magic  equal    Note: "bottom margin" is included in the "button top"
