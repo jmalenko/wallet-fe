@@ -7,7 +7,7 @@ export default function MathPractice() {
   const EMPTY = "";
   const MAX_LENGTH = 2;
 
-  const NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL = 5; // This is used with current state, so the state will have old value, the actual value is higher by 1.
+  const NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL = import.meta.env.PROD ? 10 : 3; // This is used with current state, so the state will have old value, the actual value is higher by 1.
   const NUMBER_OF_CORRECT_EXERCISES_TO_GET_TO_NEXT_LEVEL = NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL - 1;
 
   const LOG_MAX_LENGTH = 1000;
@@ -18,8 +18,8 @@ export default function MathPractice() {
   const STATE_LOADING_NEXT = 4;
   const STATE_END = 5;
 
-  const INDICATOR_TIMEOUT = 2000;
-  const STATUS_TIMEOUT = 3000;
+  const INDICATOR_TIMEOUT = import.meta.env.PROD ? 2000 : 200;
+  const STATUS_TIMEOUT = import.meta.env.PROD ? 3000 : 300;
 
   const state = useRef(STATE_LOADING);
   const exerciseNextRef = useRef();
@@ -422,8 +422,7 @@ export default function MathPractice() {
       onDelete()
     else if (event.key === "Backspace")
       setAnswer(answer.substring(0, answer.length - 1));
-    else if (event.key === "a") {
-      // TODO Cheating only in lower environments
+    else if (import.meta.env.DEV && event.key === "a") {
       const expectedAnswer = String(exercise.zadani[Number(exercise.neznama)]);
       setAnswer(expectedAnswer);
     } else if (event.key === "Enter")
