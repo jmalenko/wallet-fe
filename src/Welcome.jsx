@@ -63,7 +63,7 @@ export default function Welcome() {
 
   return (
     <main>
-      <table>
+      <table id="index">
         <tbody>
 
         <tr>
