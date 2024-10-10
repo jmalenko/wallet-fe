@@ -616,8 +616,8 @@ function MenuScreen({onUp, cviceniCelkem, spravnychVPoslednich, minSpravnych, po
 
       <div id="state">
         {cviceniCelkem < poslednich ? (
-          <p>Máš správně {spravnychVPoslednich} z {cviceniCelkem} příkladů.</p>
-        ) : (
+          <p>Máš správně {spravnychVPoslednich} z posledních {poslednich} příkladů. Zatím bylo jen {cviceniCelkem} příkladů.</p>
+          ) : (
           <p>Máš správně {spravnychVPoslednich} z posledních {poslednich} příkladů.</p>
         )}
         <p>Pro postup do dalšího cvičení musíš mít správně {minSpravnych} z posledních {poslednich} příkladů.</p>
