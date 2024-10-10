@@ -143,6 +143,14 @@ main {
   }
 
   #menuScreen {
+    font-size: 2.7vw;
+  }
+
+  #menuScreen #state {
+    margin-top: 13vw;
+  }
+  #menuScreen #state p {
+    margin: 1ex;
   }
 
   #history {
@@ -152,6 +160,7 @@ main {
     font-size: 2vw;
     border: 1px solid;
   }
+
 }
 
 @media screen and (orientation: portrait) and (max-width: 800px) {

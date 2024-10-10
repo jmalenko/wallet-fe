@@ -6,7 +6,7 @@ export default function MathPractice() {
   const EMPTY = "";
   const MAX_LENGTH = 2;
 
-  const NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL = 10; // This is used with current state, so the state will have old value, the actual value is higher by 1.
+  const NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL = 5; // This is used with current state, so the state will have old value, the actual value is higher by 1.
   const NUMBER_OF_CORRECT_EXERCISES_TO_GET_TO_NEXT_LEVEL = NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL - 1;
 
   const STATE_THINKING = 1;
@@ -191,14 +191,15 @@ export default function MathPractice() {
   }
 
   function moveToNextLevel(incorrectAnswersCurrent) {
-    if (history.length + 1 < NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL)
+    if (history.length + 1 < NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL) // +1 because the actual state is passed in parameter
       return false;
 
     let correct = 0;
     let correctString = "";
-    for (let i = history.length - NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL + 1; i < history.length; i++) {
-      const incorrectAnswers2 = history[i][1].length;
-      if (incorrectAnswers2 === 0) {
+    let from = Math.max(history.length - NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL + 1, 0)
+    for (let i = from; i < history.length; i++) {
+      const incorrectAnswers = history[i][1].length;
+      if (incorrectAnswers === 0) {
         correct++;
         correctString += ".";
       } else {
@@ -215,7 +216,21 @@ export default function MathPractice() {
     let moveToNextLevel = NUMBER_OF_CORRECT_EXERCISES_TO_GET_TO_NEXT_LEVEL <= correct;
     console.log((moveToNextLevel ? "Move to next level" : "Don't move to next level") + ". Correct " + correct + " out of " + NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL + ", min is " + NUMBER_OF_CORRECT_EXERCISES_TO_GET_TO_NEXT_LEVEL + ", summary: " + correctString);
     return moveToNextLevel;
+
   }
+
+  function countCorrectInLast() {
+    let correct = 0;
+    let from = Math.max(history.length - NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL, 0)
+    for (let i = from; i < history.length; i++) {
+      const incorrectAnswers = history[i][1].length;
+      if (incorrectAnswers === 0)
+        correct++;
+    }
+
+    return correct;
+  }
+
 
   function getNextLevel() {
     fetch(server + '/api/' + predmet + '/dalsi_cviceni/' + trida + '/' + cviceni)
@@ -308,7 +323,8 @@ export default function MathPractice() {
     </>
   ) : menuVisible ? (
     <>
-      <MenuScreen onUp={onUp}/>
+      <MenuScreen onUp={onUp} cviceniCelkem={history.length} spravnychVPoslednich={countCorrectInLast()}
+                  minSpravnych={NUMBER_OF_CORRECT_EXERCISES_TO_GET_TO_NEXT_LEVEL} poslednich={NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL}/>
       <ButtonMenu onShowMenu={onShowMenu}/>
       {/* TODO Icon should look like as a combination of menu and cross */}
     </>
@@ -474,7 +490,7 @@ function EndScreen() {
   );
 }
 
-function MenuScreen({onUp}) {
+function MenuScreen({onUp, cviceniCelkem, spravnychVPoslednich, minSpravnych, poslednich}) {
   // let xValues = [];
   // let yValues = [];
   // let yValuesBar = [];
@@ -522,6 +538,16 @@ function MenuScreen({onUp}) {
   return (
     <div id="menuScreen">
       <ButtonUp onUp={onUp}/>
+
+      <div id="state">
+        {cviceniCelkem < poslednich ? (
+          <p>Máš správně {spravnychVPoslednich} z {cviceniCelkem} příkladů.</p>
+        ) : (
+          <p>Máš správně {spravnychVPoslednich} z posledních {poslednich} příkladů.</p>
+        )}
+        <p>Pro postup do dalšího cvičení musíš mít správně {minSpravnych} z posledních {poslednich} příkladů.</p>
+      </div>
+
       {/*<table id="history">*/}
       {/*  <thead>*/}
       {/*    <tr>*/}
