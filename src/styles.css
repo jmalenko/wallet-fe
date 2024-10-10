@@ -153,14 +153,21 @@ main {
     margin: 1ex;
   }
 
-  #history {
-    font-size: 2vw;
+  #menuScreen #history {
+    margin-top: 4vw;
+    font-size: 1.6vw;
+    border-collapse: collapse;
   }
-  #history, #history th, #history td {
-    font-size: 2vw;
+  #menuScreen #history, #menuScreen #history th, #menuScreen #history td {
     border: 1px solid;
+    padding: 0 0.3em;
   }
-
+  #menuScreen #history .cell-highlight-start {
+    background-color: #ddd;
+  }
+  #menuScreen #history .cell-highlight-incorrect {
+    background-color: #fcaeae;
+  }
 }
 
 @media screen and (orientation: portrait) and (max-width: 800px) {

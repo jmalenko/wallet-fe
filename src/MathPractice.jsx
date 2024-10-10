@@ -1,6 +1,7 @@
 import {useEffect, useRef, useState} from "react";
 import {useNavigate, useParams} from 'react-router-dom';
 import {CookiesProvider, useCookies} from 'react-cookie';
+import {useLocalStorage} from "./useLocalStorage";
 
 export default function MathPractice() {
   const EMPTY = "";
@@ -8,6 +9,8 @@ export default function MathPractice() {
 
   const NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL = 5; // This is used with current state, so the state will have old value, the actual value is higher by 1.
   const NUMBER_OF_CORRECT_EXERCISES_TO_GET_TO_NEXT_LEVEL = NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL - 1;
+
+  const LOG_MAX_LENGTH = 1000;
 
   const STATE_THINKING = 1;
   const STATE_ANSWERED = 2;
@@ -43,11 +46,28 @@ export default function MathPractice() {
 
   const [cookies, setCookie] = useCookies();
 
+  const [log, setLog] = useLocalStorage("log", JSON.stringify([]));
+
   const server = true ? "http://localhost:8000" : ""; // TODO Set environment variables per environment
 
   useEffect(() => {
     fetchExercise(cviceni);
   }, [exercise]);
+
+  useEffect(() => {
+    setLog(log => [...log, {
+      timestamp: Date().valueOf(),
+      predmet: predmet,
+      trida: trida,
+      cviceni: cviceni,
+      event: "Start",
+      exercise: "",
+      answerExpected: "",
+      answerActual: "",
+      correctIndicator: "",
+      duration: ""
+    }]);
+  }, []);
 
   function fetchExercise(cviceni_) {
     if (fetchAbortController) {
@@ -66,7 +86,29 @@ export default function MathPractice() {
           setExercise(data);
           setAnswer(EMPTY);
           setIncorrectAnswers([]);
-          setTimeFrom(new Date());
+          const now = new Date();
+          setTimeFrom(now);
+
+          // Clear log
+          // setLog(log => []);
+
+          // Trim log
+          if (LOG_MAX_LENGTH < log.length) {
+            setLog(log => log.slice(-LOG_MAX_LENGTH));
+          }
+
+          setLog(log => [...log, {
+            timestamp: now.valueOf(),
+            predmet: predmet,
+            trida: trida,
+            cviceni: cviceni,
+            event: "Nový příklad",
+            exercise: dataToString(data),
+            answerExpected: data.zadani[Number(data.neznama)],
+            answerActual: "",
+            correctIndicator: "",
+            duration: ""
+          }]);
         } else { // use this exercise after the current exercise
           console.log("Next exercise: " + JSON.stringify(data));
           setExerciseNext(data);
@@ -104,16 +146,44 @@ export default function MathPractice() {
     }
 
     state.current = STATE_ANSWERED;
+    const now = new Date();
+    const timeTo = now;
+    const timeDiff = timeTo.getTime() - timeFrom.getTime();
     if (isCorrect()) {
       console.log("Correct answer");
 
-      const timeTo = new Date();
-      const timeDiff = timeTo.getTime() - timeFrom.getTime();
       setHistory([...history, [exercise, incorrectAnswers, timeDiff]]);
+
+      setLog(log => [...log, {
+        timestamp: now.valueOf(),
+        predmet: predmet,
+        trida: trida,
+        cviceni: cviceni,
+        event: "Odpověď",
+        exercise: dataToString(exercise),
+        answerExpected: exercise.zadani[Number(exercise.neznama)],
+        answerActual: answer,
+        correctIndicator: "Správně",
+        duration: timeDiff
+      }]);
 
       let moveToNextLevel_ = moveToNextLevel(incorrectAnswers);
       if (moveToNextLevel_) {
         console.log("Next level");
+
+        setLog(log => [...log, {
+          timestamp: now.valueOf(),
+          predmet: predmet,
+          trida: trida,
+          cviceni: cviceni,
+          event: "Další cvičení",
+          exercise: "",
+          answerExpected: "",
+          answerActual: "",
+          correctIndicator: "",
+          duration: ""
+        }]);
+
         if (fetchAbortController)
           fetchAbortController.abort();
         getNextLevel();
@@ -140,6 +210,19 @@ export default function MathPractice() {
                   setIncorrectAnswers([]);
                   setTimeFrom(new Date());
 
+                  setLog(log => [...log, {
+                    timestamp: Date().valueOf(),
+                    predmet: predmet,
+                    trida: trida,
+                    cviceni: cviceniNextRef.current ? (cviceniNextRef.current.end ? "END" : cviceniNextRef.current.id) : (cviceni + " +1?"), // TODO Should use cviceniNextRef.current, but it's sometimes null
+                    event: "Nový příklad",
+                    exercise: dataToString(exerciseNextRef.current),
+                    answerExpected: exerciseNextRef.current.zadani[Number(exerciseNextRef.current.neznama)],
+                    answerActual: "",
+                    correctIndicator: "",
+                    duration: ""
+                  }]);
+
                   setHistory([]);
                   cviceniNextRef.current = null;
                 } else {
@@ -161,6 +244,20 @@ export default function MathPractice() {
           setAnswer(EMPTY);
           setIncorrectAnswers([]);
           setTimeFrom(new Date());
+
+          setLog(log => [...log, {
+            timestamp: Date().valueOf(),
+            predmet: predmet,
+            trida: trida,
+            cviceni: cviceni,
+            event: "Nový příklad",
+            exercise: dataToString(exerciseNextRef.current),
+            answerExpected: exerciseNextRef.current.zadani[Number(exerciseNextRef.current.neznama)],
+            answerActual: "",
+            correctIndicator: "",
+            duration: ""
+          }]);
+
         } else {
           console.log("Loading exercise");
           state.current = STATE_LOADING;
@@ -172,6 +269,19 @@ export default function MathPractice() {
       console.log("Incorrect answer. Expected: " + expectedAnswer + ", actual: " + actualAnswer);
 
       setIncorrectAnswers([...incorrectAnswers, actualAnswer]);
+
+      setLog(log => [...log, {
+        timestamp: now.valueOf(),
+        predmet: predmet,
+        trida: trida,
+        cviceni: cviceni,
+        event: "Odpověď",
+        exercise: dataToString(exercise),
+        answerExpected: expectedAnswer,
+        answerActual: actualAnswer,
+        correctIndicator: "Chyba",
+        duration: timeDiff
+      }]);
 
       setTimeout(() => {
         state.current = STATE_THINKING;
@@ -188,6 +298,17 @@ export default function MathPractice() {
     let actualAnswer = Number(answer);
     let correct = expectedAnswer === actualAnswer;
     return correct
+  }
+
+  function dataToString(data) {
+    const n = Number(data.neznama);
+    let zadaniStr = "";
+    for (let i = 0; i < data.zadani.length; i++) {
+      if (i)
+        zadaniStr += " ";
+      zadaniStr += i === n ? "…" : data.zadani[i];
+    }
+    return zadaniStr;
   }
 
   function moveToNextLevel(incorrectAnswersCurrent) {
@@ -324,7 +445,7 @@ export default function MathPractice() {
   ) : menuVisible ? (
     <>
       <MenuScreen onUp={onUp} cviceniCelkem={history.length} spravnychVPoslednich={countCorrectInLast()}
-                  minSpravnych={NUMBER_OF_CORRECT_EXERCISES_TO_GET_TO_NEXT_LEVEL} poslednich={NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL}/>
+                  minSpravnych={NUMBER_OF_CORRECT_EXERCISES_TO_GET_TO_NEXT_LEVEL} poslednich={NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL} log={log}/>
       <ButtonMenu onShowMenu={onShowMenu}/>
       {/* TODO Icon should look like as a combination of menu and cross */}
     </>
@@ -490,51 +611,7 @@ function EndScreen() {
   );
 }
 
-function MenuScreen({onUp, cviceniCelkem, spravnychVPoslednich, minSpravnych, poslednich}) {
-  // let xValues = [];
-  // let yValues = [];
-  // let yValuesBar = [];
-  //
-  // let c = 0;
-  // history.forEach((element) => {
-  //   xValues.push(++c);
-  //   yValues.push(element[2] / 1000);
-  //   yValuesBar.push(element[1].length);
-  // });
-  //
-  // new Chart("myChart", {
-  //   type: "line",
-  //   data: {
-  //     labels: xValues,
-  //     datasets: [
-  //       {
-  //         label: "Doba [s]",
-  //         data: yValues,
-  //         backgroundColor: "rgba(0,255,0,1.0)",
-  //         borderColor: "rgba(0,255,0,0.1)",
-  //         borderWidth: 10,
-  //         fill: false,
-  //         tension: 0.1,
-  //       },
-  //       {
-  //         label: "Počet chyb",
-  //         data: yValuesBar,
-  //         backgroundColor: "rgba(255,0,0,1.0)",
-  //         borderColor: "rgba(255,0,0,0.1)",
-  //         fill: false,
-  //         borderWidth: 10,
-  //         tension: 0.1,
-  //       },
-  //     ],
-  //   },
-  //   options: {
-  //     legend: {
-  //       position: "bottom",
-  //     },
-  //     aspectRatio: 3.1,
-  //   },
-  // });
-
+function MenuScreen({onUp, cviceniCelkem, spravnychVPoslednich, minSpravnych, poslednich, log}) {
   return (
     <div id="menuScreen">
       <ButtonUp onUp={onUp}/>
@@ -548,32 +625,67 @@ function MenuScreen({onUp, cviceniCelkem, spravnychVPoslednich, minSpravnych, po
         <p>Pro postup do dalšího cvičení musíš mít správně {minSpravnych} z posledních {poslednich} příkladů.</p>
       </div>
 
-      {/*<table id="history">*/}
-      {/*  <thead>*/}
-      {/*    <tr>*/}
-      {/*      <th>Předmět</th>*/}
-      {/*      <th>Třída</th>*/}
-      {/*      <th>Cvičení</th>*/}
-      {/*      <th>Událost</th>*/}
-      {/*      <th>Zadání</th>*/}
-      {/*      <th>Odpověď</th>*/}
-      {/*      <th>Hodnocení</th>*/}
-      {/*      <th>Akce</th>*/}
-      {/*    </tr>*/}
-      {/*  </thead>*/}
-      {/*  <tbody>*/}
-      {/*  <tr>*/}
-      {/*    <td>Matematika</td>*/}
-      {/*    <td>Třída</td>*/}
-      {/*    <td>Cvičení</td>*/}
-      {/*    <td>Událost</td>*/}
-      {/*    <td>Zadání</td>*/}
-      {/*    <td>Odpověď</td>*/}
-      {/*    <td>Hodnocení</td>*/}
-      {/*    <td>Akce</td>*/}
-      {/*  </tr>*/}
-      {/*  </tbody>*/}
-      {/*</table>*/}
+      <table id="history">
+        <thead>
+        <tr>
+          <th>Čas</th>
+          <th>Předmět</th>
+          <th>Třída</th>
+          <th>Cvičení</th>
+          <th>Událost</th>
+          <th>Zadání</th>
+          <th>Odpověď<br/>očekávaná</th>
+          <th>Odpověď<br/>skutečná</th>
+          <th>Hodnocení</th>
+          <th>Doba</th>
+        </tr>
+        </thead>
+        <tbody>
+        {Object.keys(log).map(i => {
+          const l = log[i];
+
+          const date = new Date(l.timestamp);
+          const year = date.getFullYear();
+          const month = date.getMonth();
+          const monthStr = (month < 9 ? "0" : "") + (month + 1);
+          const day = date.getDate();
+          const dayStr = (day <= 9 ? "0" : "") + day;
+
+          const hour = date.getHours();
+          const hourStr = (hour <= 9 ? "0" : "") + hour;
+          const minute = date.getMinutes();
+          const minuteStr = (minute <= 9 ? "0" : "") + minute;
+          const second = date.getSeconds();
+          const secondStr = (second <= 9 ? "0" : "") + second;
+          const millisecond = date.getMilliseconds();
+          let millisecondStr = ["000", millisecond].join("");
+          millisecondStr = millisecondStr.substring(millisecondStr.length - 3);
+
+          const timeStr = year + "-" + monthStr + "-" + dayStr + " " + hourStr + ":" + minuteStr + ":" + secondStr + "." + millisecondStr;
+
+          const durationRounded = l.duration != "" ? Math.round(l.duration / 100) / 10 : "";
+          // TODO Add link to start the exercise
+
+          const highlightRow = ["Start", "Další cvičení"].includes(l.event) ? "cell-highlight-start" : "";
+          const highlight = l.correctIndicator == "Chyba" ? "cell-highlight-incorrect" : "";
+
+          return (
+            <tr key={i} className={highlightRow}>
+              <td>{timeStr}</td>
+              <td>{l.predmet}</td>
+              <td>{l.trida}</td>
+              <td>{l.cviceni}</td>
+              <td>{l.event}</td>
+              <td>{l.exercise}</td>
+              <td>{l.answerExpected}</td>
+              <td>{l.answerActual}</td>
+              <td className={highlight}>{l.correctIndicator}</td>
+              <td>{durationRounded}</td>
+            </tr>
+          )
+        })}
+        </tbody>
+      </table>
     </div>
   );
 }
