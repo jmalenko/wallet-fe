@@ -75,6 +75,12 @@ main {
   background-color: transparent;
 }
 
+#up {
+  position: fixed;
+  top: 3vw;
+  left: 48.5vw;
+}
+
 .icon {
   border: 0.1vw solid #333333;
   border-radius: 0.5vw;
@@ -137,11 +143,14 @@ main {
   }
 
   #menuScreen {
-    position: relative; 
-    width: 87vw;
-    left: 0;
-    top: 0;
-    z-index: -100;
+  }
+
+  #history {
+    font-size: 2vw;
+  }
+  #history, #history th, #history td {
+    font-size: 2vw;
+    border: 1px solid;
   }
 }
 

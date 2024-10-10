@@ -26,7 +26,7 @@ export default function MathPractice() {
 
   const [exerciseNext, setExerciseNext] = useState();
 
-  // const [menuVisible, setMenuVisible] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(false);
   const [incorrectAnswers, setIncorrectAnswers] = useState(); // Incorrect answers for the current exercise
   const [timeFrom, setTimeFrom] = useState();
   const [history, setHistory] = useState([]);
@@ -43,7 +43,7 @@ export default function MathPractice() {
 
   const [cookies, setCookie] = useCookies();
 
-  const server = true ? "http://localhost:8000" : "";
+  const server = true ? "http://localhost:8000" : ""; // TODO Set environment variables per environment
 
   useEffect(() => {
     fetchExercise(cviceni);
@@ -242,9 +242,11 @@ export default function MathPractice() {
   }
 
   function onShowMenu() {
-    // setMenuVisible(!menuVisible);
-    // const element = document.getElementById("menuScreen")
-    // element.style.visibility = menuVisible ? "visible" : "hidden";
+    setMenuVisible(!menuVisible);
+  }
+
+  function onUp() {
+    navigate("/");
   }
 
   // Message
@@ -304,6 +306,12 @@ export default function MathPractice() {
     <>
       <EndScreen/>
     </>
+  ) : menuVisible ? (
+    <>
+      <MenuScreen onUp={onUp}/>
+      <ButtonMenu onShowMenu={onShowMenu}/>
+      {/* TODO Icon should look like as a combination of menu and cross */}
+    </>
   ) : (
     <>
       <Zadani exercise={exercise} answer={answer}
@@ -325,6 +333,8 @@ export default function MathPractice() {
         <ButtonSubmit onSubmit={onSubmit}/>
         <ButtonDelete onDelete={onDelete}/>
       </div>
+
+      <ButtonMenu onShowMenu={onShowMenu}/>
 
       {message != null &&
         <div id="message">{message}</div>}
@@ -400,22 +410,22 @@ function ButtonDelete({onDelete}) {
   );
 }
 
-// function ButtonMenu({ onShowMenu }) {
-//   return (
-//     <img
-//       id="menu"
-//       className="icon"
-//       onClick={onShowMenu}
-//       src="/images/menu_24dp_FILL0_wght400_GRAD0_opsz24.svg"
-//       alt="Menu" />
-//   );
-// }
+function ButtonMenu({onShowMenu}) {
+  return (
+    <img
+      id="menu"
+      className="icon"
+      onClick={onShowMenu}
+      src="/images/menu_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+      alt="Menu"/>
+  );
+}
 
 function IconCorrect({isVisible}) {
   return isVisible ? (
     <img
       id="correct"
-      src="/images/check_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+      src="/images/correct__check_24dp_FILL0_wght400_GRAD0_opsz24.svg"
       alt="Correct"/>
   ) : (
     <></>
@@ -426,7 +436,7 @@ function IconIncorrect({isVisible}) {
   return isVisible ? (
     <img
       id="incorrect"
-      src="/images/close_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+      src="/images/incorrect__close_24dp_FILL0_wght400_GRAD0_opsz24.svg"
       alt="Incorrect"/>
   ) : (
     <></>
@@ -459,7 +469,96 @@ function EndScreen() {
         className="icon"
         onClick={onClick}
         src="/images/send_24dp_FILL0_wght400_GRAD0_opsz24.svg"
-        alt="Přejít na začátek"/>
+        alt="Přejít na rozcestník"/>
     </div>
+  );
+}
+
+function MenuScreen({onUp}) {
+  // let xValues = [];
+  // let yValues = [];
+  // let yValuesBar = [];
+  //
+  // let c = 0;
+  // history.forEach((element) => {
+  //   xValues.push(++c);
+  //   yValues.push(element[2] / 1000);
+  //   yValuesBar.push(element[1].length);
+  // });
+  //
+  // new Chart("myChart", {
+  //   type: "line",
+  //   data: {
+  //     labels: xValues,
+  //     datasets: [
+  //       {
+  //         label: "Doba [s]",
+  //         data: yValues,
+  //         backgroundColor: "rgba(0,255,0,1.0)",
+  //         borderColor: "rgba(0,255,0,0.1)",
+  //         borderWidth: 10,
+  //         fill: false,
+  //         tension: 0.1,
+  //       },
+  //       {
+  //         label: "Počet chyb",
+  //         data: yValuesBar,
+  //         backgroundColor: "rgba(255,0,0,1.0)",
+  //         borderColor: "rgba(255,0,0,0.1)",
+  //         fill: false,
+  //         borderWidth: 10,
+  //         tension: 0.1,
+  //       },
+  //     ],
+  //   },
+  //   options: {
+  //     legend: {
+  //       position: "bottom",
+  //     },
+  //     aspectRatio: 3.1,
+  //   },
+  // });
+
+  return (
+    <div id="menuScreen">
+      <ButtonUp onUp={onUp}/>
+      {/*<table id="history">*/}
+      {/*  <thead>*/}
+      {/*    <tr>*/}
+      {/*      <th>Předmět</th>*/}
+      {/*      <th>Třída</th>*/}
+      {/*      <th>Cvičení</th>*/}
+      {/*      <th>Událost</th>*/}
+      {/*      <th>Zadání</th>*/}
+      {/*      <th>Odpověď</th>*/}
+      {/*      <th>Hodnocení</th>*/}
+      {/*      <th>Akce</th>*/}
+      {/*    </tr>*/}
+      {/*  </thead>*/}
+      {/*  <tbody>*/}
+      {/*  <tr>*/}
+      {/*    <td>Matematika</td>*/}
+      {/*    <td>Třída</td>*/}
+      {/*    <td>Cvičení</td>*/}
+      {/*    <td>Událost</td>*/}
+      {/*    <td>Zadání</td>*/}
+      {/*    <td>Odpověď</td>*/}
+      {/*    <td>Hodnocení</td>*/}
+      {/*    <td>Akce</td>*/}
+      {/*  </tr>*/}
+      {/*  </tbody>*/}
+      {/*</table>*/}
+    </div>
+  );
+}
+
+function ButtonUp({onUp}) {
+  return (
+    <img
+      id="up"
+      className="icon"
+      onClick={onUp}
+      src="/images/arrow_upward_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg"
+      alt="Přejít na rozcestník"/>
   );
 }
