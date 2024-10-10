@@ -60,8 +60,8 @@ export default function Welcome() {
   }
 
   return (
-    <main>
-      <table id="index">
+    <main id="welcome">
+      <table>
         <tbody>
 
         <tr>

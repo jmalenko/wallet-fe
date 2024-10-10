@@ -114,11 +114,16 @@ main {
   text-align: center;
 }
 
-#index {
+#welcome {
 }
-#index select {
+#welcome select {
   height: 4vw;
   font-size: 2vw;
+}
+#welcome button {
+  height: 6vw;
+  font-size: 4vw;
+  padding: 0 1em;
 }
 
 
