@@ -18,10 +18,8 @@ export default function Welcome() {
 
   console.log("Next: trida=" + cookies.tridaNext + ", cviceni=" + cookies.cviceniNext);
 
-  const server = true ? "http://localhost:8000" : "";
-
   useEffect(() => {
-    fetch(server + '/api/' + predmet + '/seznam_tridy')
+     fetch(import.meta.env.VITE_API_BASE_URL + 'api/' + predmet + '/seznam_tridy')
       .then((res) => {
         return res.json();
       })
@@ -35,7 +33,7 @@ export default function Welcome() {
   }, []);
 
   useEffect(() => {
-    fetch(server + '/api/' + predmet + '/seznam_cviceni/' + (trida || 1))
+    fetch(import.meta.env.VITE_API_BASE_URL + 'api/' + predmet + '/seznam_cviceni/' + (trida || 1))
       .then((res) => {
         return res.json();
       })

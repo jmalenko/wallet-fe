@@ -48,8 +48,6 @@ export default function MathPractice() {
 
   const [log, setLog] = useLocalStorage("log", JSON.stringify([]));
 
-  const server = true ? "http://localhost:8000" : ""; // TODO Set environment variables per environment
-
   useEffect(() => {
     fetchExercise(cviceni);
   }, [exercise]);
@@ -75,7 +73,7 @@ export default function MathPractice() {
     }
 
     fetchAbortController = new AbortController();
-    fetch(server + '/api/' + predmet + '/' + trida + '/' + cviceni_, {signal: fetchAbortController.signal})
+    fetch(import.meta.env.VITE_API_BASE_URL + 'api/' + predmet + '/' + trida + '/' + cviceni_, {signal: fetchAbortController.signal})
       .then((res) => {
         return res.json();
       })
@@ -354,7 +352,7 @@ export default function MathPractice() {
 
 
   function getNextLevel() {
-    fetch(server + '/api/' + predmet + '/dalsi_cviceni/' + trida + '/' + cviceni)
+    fetch(import.meta.env.VITE_API_BASE_URL + 'api/' + predmet + '/dalsi_cviceni/' + trida + '/' + cviceni)
       .then((res) => {
         return res.json();
       })
