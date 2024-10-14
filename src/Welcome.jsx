@@ -50,7 +50,7 @@ export default function Welcome() {
       });
   }, [trida]);
 
-  function onClickStart() {
+  function onStart() {
     navigate("/" + predmet + "/" + trida + "/" + cviceni)
   }
 
@@ -93,7 +93,7 @@ export default function Welcome() {
               seznamCviceni !== undefined && Object.keys(seznamCviceni).map(id => {
                   let passed = doneContains(done, {predmet: predmet, trida: trida, cviceni: id});
                   let className = passed ? "passed" : "";
-                  let mark = passed ? " ✔" : "" // For: 1. Accessibility, 2. Firefox doesn't set the background with pure CSS (only programmatically)
+                  let mark = passed ? " ✔" : "" // For: 1. Accessibility, 2. Firefox and Chrome Mobile don't set the background with pure CSS (only programmatically)
                   return (
                     <option key={id} value={id} className={className}>{id}: {seznamCviceni[id]}{mark}</option>
                   )
@@ -109,7 +109,7 @@ export default function Welcome() {
       <img
         id="start"
         className="icon"
-        onClick={onClickStart}
+        onClick={onStart}
         src="/images/play_arrow_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg"
         alt="Start"/>
     </main>

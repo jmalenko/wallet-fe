@@ -63,7 +63,7 @@ main {
 }
 
 #start {
-  margin-top: 8vw;
+  margin-top: 4vw;
 
   display:block;
   margin-left:auto;
@@ -129,11 +129,6 @@ main {
   height: 4vw;
   font-size: 2vw;
 }
-#welcome button {
-  height: 6vw;
-  font-size: 4vw;
-  padding: 0 1em;
-}
 #welcome .passed {
   background-color: #c3f9ae;
 }
@@ -178,8 +173,8 @@ main {
   }
 
   #zadani {
-    top: calc((100%   - 3vw  - 7vw  - 3vw  - 17vw - 5vw) / 2);
-         /*    screen top    button bottom font     megic  equal
+    top: calc((100%   - 3vw  - 7vw  - 3vw  - 17vw - 3vw) / 2);
+         /*    screen top    button bottom font     magic  equal
                height margin height margin size     const  spacing */
   }
 
