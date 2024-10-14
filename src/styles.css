@@ -173,6 +173,11 @@ main {
     font-size: 1.6vw;
     border-collapse: collapse;
   }
+  #menuScreen #history th {
+    position: sticky;
+    background: white;
+    top: 0;
+  }
   #menuScreen #history, #menuScreen #history th, #menuScreen #history td {
     border: 1px solid;
     padding: 0 0.3em;
@@ -195,7 +200,7 @@ main {
          /*    screen top button button top    font     magic  equal    Note: "bottom margin" is included in the "button top"
                height bottom     height margin size     const  spacing */
   }
-  
+
   #tlacitka span {
     width: 20vw;
     height: 20vw;
