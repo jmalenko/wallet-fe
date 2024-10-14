@@ -62,6 +62,14 @@ main {
   text-align: center;
 }
 
+#start {
+  margin-top: 8vw;
+
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+}
+
 #submit {
 }
 

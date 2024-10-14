@@ -451,8 +451,7 @@ export default function MathPractice() {
     <>
       <MenuScreen onHome={onHome} cviceniCelkem={history.length} spravnychVPoslednich={countCorrectInLast()}
                   minSpravnych={NUMBER_OF_CORRECT_EXERCISES_TO_GET_TO_NEXT_LEVEL} poslednich={NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL} log={log}/>
-      <ButtonMenu onShowMenu={onShowMenu}/>
-      {/* TODO Icon should look like as a combination of menu and cross */}
+      <ButtonMenu onShowMenu={onShowMenu} isMenuVisible={menuVisible}/>
     </>
   ) : (
     <>
@@ -476,7 +475,7 @@ export default function MathPractice() {
         <ButtonDelete onDelete={onDelete}/>
       </div>
 
-      <ButtonMenu onShowMenu={onShowMenu}/>
+      <ButtonMenu onShowMenu={onShowMenu} isMenuVisible={menuVisible}/>
 
       {message != null &&
         <div id="message">{message}</div>}
@@ -552,13 +551,13 @@ function ButtonDelete({onDelete}) {
   );
 }
 
-function ButtonMenu({onShowMenu}) {
+function ButtonMenu({onShowMenu, isMenuVisible}) {
   return (
     <img
       id="menu"
       className="icon"
       onClick={onShowMenu}
-      src="/images/menu_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+      src={isMenuVisible ? "/images/close_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg" : "/images/menu_24dp_FILL0_wght400_GRAD0_opsz24.svg"}
       alt="Menu"/>
   );
 }
