@@ -114,6 +114,7 @@ main {
   text-align: center;
 }
 
+
 #welcome {
 }
 #welcome select {
@@ -128,6 +129,40 @@ main {
 #welcome .passed {
   background-color: #c3f9ae;
 }
+
+
+#menuScreen {
+  font-size: 2.7vw;
+}
+
+#menuScreen #state {
+  margin-top: 13vw;
+}
+#menuScreen #state p {
+  margin: 1ex;
+}
+
+#menuScreen #history {
+  margin-top: 4vw;
+  font-size: 1.6vw;
+  border-collapse: collapse;
+}
+#menuScreen #history th {
+  position: sticky;
+  background: white;
+  top: 0;
+}
+#menuScreen #history, #menuScreen #history th, #menuScreen #history td {
+  border: 1px solid;
+  padding: 0 0.3em;
+}
+#menuScreen #history .cell-highlight-start {
+  background-color: #ddd;
+}
+#menuScreen #history .cell-highlight-incorrect {
+  background-color: #fcaeae;
+}
+
 
 @media not screen and (orientation: portrait) and (max-width: 800px) {
   main {
@@ -155,38 +190,6 @@ main {
     right: 3vw;
     bottom: 12vw;
     position: fixed;
-  }
-
-  #menuScreen {
-    font-size: 2.7vw;
-  }
-
-  #menuScreen #state {
-    margin-top: 13vw;
-  }
-  #menuScreen #state p {
-    margin: 1ex;
-  }
-
-  #menuScreen #history {
-    margin-top: 4vw;
-    font-size: 1.6vw;
-    border-collapse: collapse;
-  }
-  #menuScreen #history th {
-    position: sticky;
-    background: white;
-    top: 0;
-  }
-  #menuScreen #history, #menuScreen #history th, #menuScreen #history td {
-    border: 1px solid;
-    padding: 0 0.3em;
-  }
-  #menuScreen #history .cell-highlight-start {
-    background-color: #ddd;
-  }
-  #menuScreen #history .cell-highlight-incorrect {
-    background-color: #fcaeae;
   }
 }
 
