@@ -18,8 +18,8 @@ export default function Welcome() {
   const [done, setDone] = useLocalStorage("done", JSON.stringify([]));
   const [next, setNext] = useLocalStorage("next", JSON.stringify({}));
 
-  console.debug("Done: " + JSON.stringify(done));
-  console.debug("Next: predmet=" + next.predmet + ", trida=" + next.trida + ", cviceni=" + next.cviceni);
+  // console.debug("Done: " + JSON.stringify(done));
+  // console.debug("Next: predmet=" + next.predmet + ", trida=" + next.trida + ", cviceni=" + next.cviceni);
 
   useEffect(() => {
     fetch(import.meta.env.VITE_API_BASE_URL + 'api/' + predmet + '/seznam_tridy')
