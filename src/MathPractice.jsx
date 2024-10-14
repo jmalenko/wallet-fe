@@ -1,6 +1,5 @@
 import {useEffect, useRef, useState} from "react";
 import {useNavigate, useParams} from 'react-router-dom';
-import {CookiesProvider, useCookies} from 'react-cookie';
 import {useLocalStorage} from "./useLocalStorage";
 
 export default function MathPractice() {
@@ -44,9 +43,8 @@ export default function MathPractice() {
   let fetchAbortController;
   const cviceniNextRef = useRef();
 
-  const [cookies, setCookie] = useCookies();
-
   const [log, setLog] = useLocalStorage("log", JSON.stringify([]));
+  const [next, setNext] = useLocalStorage("next", JSON.stringify({}));
 
   useEffect(() => {
     fetchExercise(cviceni);
@@ -362,9 +360,12 @@ export default function MathPractice() {
         if (!data.end) {
           fetchExercise(data.id);
         }
-        console.log("Setting cookies: " + predmet + ", " + trida + ", " + cviceni);
-        setCookie("tridaNext", trida, {path: '/'});
-        setCookie("cviceniNext", data.id, {path: '/'});
+        console.log("Setting next cviceni: " + predmet + ", " + trida + ", " + cviceni);
+        setNext({
+          predmet: predmet,
+          trida: trida,
+          cviceni: data.id
+        });
       });
   }
 
@@ -383,7 +384,7 @@ export default function MathPractice() {
     navigate("/");
   }
 
-  // Message
+// Message
 
   let timeout = null;
 
@@ -403,7 +404,7 @@ export default function MathPractice() {
     setMessage(null);
   }
 
-  // Physical keys
+// Physical keys
 
   useEffect(() => {
     document.addEventListener('keydown', onKeyDown);
@@ -616,7 +617,7 @@ function MenuScreen({onUp, cviceniCelkem, spravnychVPoslednich, minSpravnych, po
       <div id="state">
         {cviceniCelkem < poslednich ? (
           <p>Máš správně {spravnychVPoslednich} z posledních {poslednich} příkladů. Zatím bylo jen {cviceniCelkem} příkladů.</p>
-          ) : (
+        ) : (
           <p>Máš správně {spravnychVPoslednich} z posledních {poslednich} příkladů.</p>
         )}
         <p>Pro postup do dalšího cvičení musíš mít správně {minSpravnych} z posledních {poslednich} příkladů.</p>

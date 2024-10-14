@@ -1,6 +1,6 @@
 import {useState, useEffect} from "react";
 import {useNavigate} from 'react-router-dom';
-import {CookiesProvider, useCookies} from 'react-cookie';
+import {useLocalStorage} from "./useLocalStorage.js";
 
 export default function Welcome() {
   const [seznamTridy, setSeznamTridy] = useState();
@@ -26,8 +26,8 @@ export default function Welcome() {
       .then((data) => {
         // console.log("Response: " + JSON.stringify(data));
         setSeznamTridy(data);
-        setTrida(firstLoad && cookies.tridaNext
-          ? cookies.tridaNext
+        setTrida(firstLoad && next && next.hasOwnProperty('trida')
+          ? next.trida
           : Object.keys(data)[0]);
       });
   }, []);
@@ -40,8 +40,8 @@ export default function Welcome() {
       .then((data) => {
         // console.log("Response: " + JSON.stringify(data));
         setSeznamCviceni(data);
-        setCviceni((firstLoad && cookies.cviceniNext) || cookies.tridaNext == trida
-          ? cookies.cviceniNext
+        setCviceni((firstLoad && next && next.hasOwnProperty('cviceni')) || next.trida === trida
+          ? next.cviceni
           : Object.keys(data)[0]);
         setFirstLoad(false);
       });

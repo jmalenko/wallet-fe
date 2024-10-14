@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 
-function getStorageValue(key, defaultValue) {
-  // localStorage.removeItem(key);
+// To remove:
+// localStorage.removeItem(key);
 
+function getStorageValue(key, defaultValue) {
   const saved = localStorage.getItem(key);
   const value = JSON.parse(saved);
   return value || defaultValue;
