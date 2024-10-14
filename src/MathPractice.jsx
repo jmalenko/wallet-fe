@@ -380,7 +380,8 @@ export default function MathPractice() {
         setNext({
           predmet: predmet,
           trida: trida,
-          cviceni: data.id
+          cviceni: data.end ? cviceni : data.id,
+          end: data.end
         });
       });
   }
@@ -397,6 +398,12 @@ export default function MathPractice() {
 
   function onHome() {
     navigate("/");
+  }
+
+  function onRestart() {
+    state.current = STATE_LOADING;
+    setExercise(null);
+    setHistory([]);
   }
 
 // Message
@@ -453,7 +460,7 @@ export default function MathPractice() {
     </>
   ) : state.current == STATE_END ? (
     <>
-      <EndScreen/>
+      <EndScreen onRestart={onRestart} onHome={onHome}/>
     </>
   ) : menuVisible ? (
     <>
@@ -602,24 +609,28 @@ function LoadingScreen({title, text1, text2}) {
   );
 }
 
-function EndScreen() {
-  let navigate = useNavigate();
-
-  function onClick() {
-    navigate("/");
-  }
-
+function EndScreen({onRestart, onHome}) {
   return (
-    <div id="loading">
-      <p>Výborně!</p>
-      <p>Vyřešil jsi všechna cvičení v této třídě.</p>
+    <>
+      <div id="loading">
+        <p>Výborně!</p>
+        <p>Vyřešil jsi všechna cvičení v této třídě.</p>
+
+        <img
+          id="start"
+          className="icon"
+          onClick={onRestart}
+          src="/images/play_arrow_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg"
+          alt="Spoustit poslední cvičení"/>
+      </div>
 
       <img
+        id="home"
         className="icon"
-        onClick={onClick}
-        src="/images/send_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+        onClick={onHome}
+        src="/images/home_24dp_FILL0_wght400_GRAD0_opsz24.svg"
         alt="Přejít na rozcestník"/>
-    </div>
+    </>
   );
 }
 
