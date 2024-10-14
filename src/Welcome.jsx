@@ -27,7 +27,7 @@ export default function Welcome() {
         return res.json();
       })
       .then((data) => {
-        console.debug("Data: " + JSON.stringify(data));
+        // console.debug("Data: " + JSON.stringify(data));
         setSeznamTridy(data);
         setTrida(firstLoad && next && next.hasOwnProperty('trida')
           ? next.trida
@@ -41,7 +41,7 @@ export default function Welcome() {
         return res.json();
       })
       .then((data) => {
-        console.debug("Data: " + JSON.stringify(data));
+        // console.debug("Data: " + JSON.stringify(data));
         setSeznamCviceni(data);
         setCviceni((firstLoad && next && next.hasOwnProperty('cviceni')) || next.trida === trida
           ? next.cviceni
@@ -106,16 +106,12 @@ export default function Welcome() {
         </tbody>
       </table>
 
-      {/*<button onClick={onClickStart}>Start</button>*/}
-      {/*<button onClick={onClickStart}>▶ Start</button>*/}
-
       <img
         id="start"
         className="icon"
         onClick={onClickStart}
         src="/images/play_arrow_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg"
         alt="Start"/>
-
     </main>
   );
 }
