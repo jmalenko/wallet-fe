@@ -1,6 +1,7 @@
 import {useEffect, useRef, useState} from "react";
 import {useNavigate, useParams} from 'react-router-dom';
 import {useLocalStorage} from "./useLocalStorage";
+import {doneContains} from "./shared.js";
 
 export default function MathPractice() {
   const EMPTY = "";
@@ -44,7 +45,8 @@ export default function MathPractice() {
   const cviceniNextRef = useRef();
 
   const [log, setLog] = useLocalStorage("log", JSON.stringify([]));
-  const [next, setNext] = useLocalStorage("next", JSON.stringify({}));
+  const [done, setDone] = useLocalStorage("done", JSON.stringify([])); // Set stored as array
+  const [next, setNext] = useLocalStorage("next", JSON.stringify({})); // TODO Consider getting next from done (as the first item that's not done)
 
   useEffect(() => {
     fetchExercise(cviceni);
@@ -166,6 +168,11 @@ export default function MathPractice() {
       let moveToNextLevel_ = moveToNextLevel(incorrectAnswers);
       if (moveToNextLevel_) {
         console.log("Next level");
+
+        let el = {predmet: predmet, trida: trida, cviceni: cviceni};
+        if (!doneContains(done, el)) {
+          setDone([...done, el]);
+        }
 
         setLog(log => [...log, {
           timestamp: now.valueOf(),

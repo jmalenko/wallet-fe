@@ -125,7 +125,9 @@ main {
   font-size: 4vw;
   padding: 0 1em;
 }
-
+#welcome .passed {
+  background-color: #c3f9ae;
+}
 
 @media not screen and (orientation: portrait) and (max-width: 800px) {
   main {

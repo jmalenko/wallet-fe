@@ -1,6 +1,7 @@
 import {useState, useEffect} from "react";
 import {useNavigate} from 'react-router-dom';
 import {useLocalStorage} from "./useLocalStorage.js";
+import {doneContains} from "./shared.js";
 
 export default function Welcome() {
   const [seznamTridy, setSeznamTridy] = useState();
@@ -14,12 +15,14 @@ export default function Welcome() {
 
   let navigate = useNavigate();
 
-  const [cookies, setCookie] = useCookies();
+  const [done, setDone] = useLocalStorage("done", JSON.stringify([]));
+  const [next, setNext] = useLocalStorage("next", JSON.stringify({}));
 
-  console.log("Next: trida=" + cookies.tridaNext + ", cviceni=" + cookies.cviceniNext);
+  console.log("Done: " + JSON.stringify(done));
+  console.log("Next: predmet=" + next.predmet + ", trida=" + next.trida + ", cviceni=" + next.cviceni);
 
   useEffect(() => {
-     fetch(import.meta.env.VITE_API_BASE_URL + 'api/' + predmet + '/seznam_tridy')
+    fetch(import.meta.env.VITE_API_BASE_URL + 'api/' + predmet + '/seznam_tridy')
       .then((res) => {
         return res.json();
       })
@@ -87,8 +90,15 @@ export default function Welcome() {
           <td><label>Cvičení:</label></td>
           <td>
             <select onChange={onChangeCviceni} value={cviceni}>{
-              seznamCviceni !== undefined && Object.keys(seznamCviceni).map(id => (
-                <option key={id} value={id}>{id}: {seznamCviceni[id]}</option>))
+              seznamCviceni !== undefined && Object.keys(seznamCviceni).map(id => {
+                  let passed = doneContains(done, {predmet: predmet, trida: trida, cviceni: id});
+                  let className = passed ? "passed" : "";
+                  let mark = passed ? " ✔" : "" // For: 1. Accessibility, 2. Firefox doesn't set the background with pure CSS (only programmatically)
+                  return (
+                    <option key={id} value={id} className={className}>{id}: {seznamCviceni[id]}{mark}</option>
+                  )
+                }
+              )
             }</select>
           </td>
         </tr>
