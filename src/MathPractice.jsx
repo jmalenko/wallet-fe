@@ -67,6 +67,14 @@ export default function MathPractice() {
     }]);
   }, []);
 
+  useEffect(() => {
+    document.documentElement.requestFullscreen();
+
+    return () => {
+      document.exitFullscreen();
+    };
+  }, []);
+
   function fetchExercise(cviceni_) {
     if (fetchAbortController) {
       console.error('Logical error: The next fetch must not happen before the current ends.');
