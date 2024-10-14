@@ -71,7 +71,12 @@ export default function MathPractice() {
     document.documentElement.requestFullscreen();
 
     return () => {
-      document.exitFullscreen();
+      if (document.fullscreenElement) {
+        document
+          .exitFullscreen()
+          // .then(() => console.log("Exited from Full screen mode"))
+          .catch((err) => console.error(err));
+      }
     };
   }, []);
 
