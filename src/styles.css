@@ -75,10 +75,10 @@ main {
   background-color: transparent;
 }
 
-#up {
+#home {
   position: fixed;
   top: 3vw;
-  left: 48.5vw;
+  left: 3vw;
 }
 
 .icon {

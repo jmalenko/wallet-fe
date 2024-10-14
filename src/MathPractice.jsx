@@ -387,7 +387,7 @@ export default function MathPractice() {
     setMenuVisible(!menuVisible);
   }
 
-  function onUp() {
+  function onHome() {
     navigate("/");
   }
 
@@ -449,7 +449,7 @@ export default function MathPractice() {
     </>
   ) : menuVisible ? (
     <>
-      <MenuScreen onUp={onUp} cviceniCelkem={history.length} spravnychVPoslednich={countCorrectInLast()}
+      <MenuScreen onHome={onHome} cviceniCelkem={history.length} spravnychVPoslednich={countCorrectInLast()}
                   minSpravnych={NUMBER_OF_CORRECT_EXERCISES_TO_GET_TO_NEXT_LEVEL} poslednich={NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL} log={log}/>
       <ButtonMenu onShowMenu={onShowMenu}/>
       {/* TODO Icon should look like as a combination of menu and cross */}
@@ -616,11 +616,9 @@ function EndScreen() {
   );
 }
 
-function MenuScreen({onUp, cviceniCelkem, spravnychVPoslednich, minSpravnych, poslednich, log}) {
+function MenuScreen({onHome, cviceniCelkem, spravnychVPoslednich, minSpravnych, poslednich, log}) {
   return (
     <div id="menuScreen">
-      <ButtonUp onUp={onUp}/>
-
       <div id="state">
         {cviceniCelkem < poslednich ? (
           <p>Máš správně {spravnychVPoslednich} z posledních {poslednich} příkladů. Zatím bylo jen {cviceniCelkem} příkladů.</p>
@@ -669,7 +667,6 @@ function MenuScreen({onUp, cviceniCelkem, spravnychVPoslednich, minSpravnych, po
           const timeStr = year + "-" + monthStr + "-" + dayStr + " " + hourStr + ":" + minuteStr + ":" + secondStr + "." + millisecondStr;
 
           const durationRounded = l.duration != "" ? Math.round(l.duration / 100) / 10 : "";
-          // TODO Add link to start the exercise
 
           const highlightRow = ["Start", "Další cvičení"].includes(l.event) ? "cell-highlight-start" : "";
           const highlight = l.correctIndicator == "Chyba" ? "cell-highlight-incorrect" : "";
@@ -691,17 +688,19 @@ function MenuScreen({onUp, cviceniCelkem, spravnychVPoslednich, minSpravnych, po
         })}
         </tbody>
       </table>
+
+      <ButtonHome onHome={onHome}/>
     </div>
   );
 }
 
-function ButtonUp({onUp}) {
+function ButtonHome({onHome}) {
   return (
     <img
-      id="up"
+      id="home"
       className="icon"
-      onClick={onUp}
-      src="/images/arrow_upward_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg"
+      onClick={onHome}
+      src="/images/home_24dp_FILL0_wght400_GRAD0_opsz24.svg"
       alt="Přejít na rozcestník"/>
   );
 }
