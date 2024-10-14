@@ -89,9 +89,6 @@ export default function MathPractice() {
           const now = new Date();
           setTimeFrom(now);
 
-          // Clear log
-          // setLog(log => []);
-
           // Trim log
           if (LOG_MAX_LENGTH < log.length) {
             setLog(log => log.slice(-LOG_MAX_LENGTH));
