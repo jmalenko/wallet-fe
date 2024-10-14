@@ -79,7 +79,9 @@ export default function MathPractice() {
       })
       .then((data) => {
         if (state.current == STATE_LOADING) { // 1st exercise
-          console.log("New exercise: " + JSON.stringify(data));
+          if (import.meta.env.DEV)
+            console.debug("Data: " + JSON.stringify(data));
+          console.log("New exercise: " + dataToString(data));
           state.current = STATE_THINKING;
           setExercise(data);
           setAnswer(EMPTY);
@@ -102,21 +104,23 @@ export default function MathPractice() {
             cviceni: cviceni,
             event: "Nový příklad",
             exercise: dataToString(data),
-            answerExpected: data.zadani[Number(data.neznama)],
+            answerExpected: "",
             answerActual: "",
             correctIndicator: "",
             duration: ""
           }]);
         } else { // use this exercise after the current exercise
-          console.log("Next exercise: " + JSON.stringify(data));
+          if (import.meta.env.DEV)
+            console.debug("Data: " + JSON.stringify(data));
+          console.log("Next exercise: " + dataToString(data));
           setExerciseNext(data);
         }
       })
       .catch(err => {
         if (err.name === 'AbortError') {
-          console.log('Fetch request was canceled');
+          console.debug('Fetch request was canceled');
         } else {
-          console.error('Fetch error: ', err);
+          throw err;
         }
       })
   }
@@ -128,7 +132,7 @@ export default function MathPractice() {
   function onAddDigit(digit) {
     if (state.current != STATE_THINKING) return;
 
-    // console.log("Add digit: " + answer + " + " + digit);
+    console.debug("Add digit: " + answer + " + " + digit);
     if (answer.length < MAX_LENGTH || answer.length < exercise.zadani[exercise.neznama].toString().length) {
       setAnswer(answer + digit);
     } else {
@@ -194,17 +198,17 @@ export default function MathPractice() {
 
       setTimeout(() => {
         if (moveToNextLevel_) {
-          console.log("Timeout for answer indicator");
+          console.debug("Timeout for answer indicator");
           if (cviceniNextRef.current != null) {
             if (cviceniNextRef.current.end) {
-              console.log("This was the last exercise");
+              console.info("This was the last exercise");
               state.current = STATE_END;
               setExerciseNext(null); // set some state variable to force rerender
             } else {
               state.current = STATE_LOADING_NEXT;
               navigate("/" + predmet + "/" + trida + "/" + cviceniNextRef.current.id);
               setTimeout(() => {
-                console.log("Timeout for loading screen");
+                console.debug("Timeout for loading screen");
                 if (exerciseNextRef.current != null) {
                   state.current = STATE_THINKING;
                   setExercise(exerciseNextRef.current);
@@ -234,7 +238,7 @@ export default function MathPractice() {
               }, INDICATOR_TIMEOUT);
             }
           } else {
-            console.log("TODO");
+            console.warn("TODO");
             // TODO may not be loaded
           }
           return;
@@ -255,14 +259,14 @@ export default function MathPractice() {
             cviceni: cviceni,
             event: "Nový příklad",
             exercise: dataToString(exerciseNextRef.current),
-            answerExpected: exerciseNextRef.current.zadani[Number(exerciseNextRef.current.neznama)],
+            answerExpected: "",
             answerActual: "",
             correctIndicator: "",
             duration: ""
           }]);
 
         } else {
-          console.log("Loading exercise");
+          console.debug("Loading exercise");
           state.current = STATE_LOADING;
         }
       }, INDICATOR_TIMEOUT);
@@ -338,7 +342,7 @@ export default function MathPractice() {
     }
 
     let moveToNextLevel = NUMBER_OF_CORRECT_EXERCISES_TO_GET_TO_NEXT_LEVEL <= correct;
-    console.log((moveToNextLevel ? "Move to next level" : "Don't move to next level") + ". Correct " + correct + " out of " + NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL + ", min is " + NUMBER_OF_CORRECT_EXERCISES_TO_GET_TO_NEXT_LEVEL + ", summary: " + correctString);
+    console.debug((moveToNextLevel ? "Move to next level" : "Don't move to next level") + ". Correct " + correct + " out of " + NUMBER_OF_TOTAL_EXERCISES_TO_GET_TO_NEXT_LEVEL + ", min is " + NUMBER_OF_CORRECT_EXERCISES_TO_GET_TO_NEXT_LEVEL + ", summary: " + correctString);
     return moveToNextLevel;
 
   }
@@ -362,12 +366,12 @@ export default function MathPractice() {
         return res.json();
       })
       .then((data) => {
-        console.log("Next level is: " + JSON.stringify(data));
+        console.info("Next level is: " + JSON.stringify(data));
         cviceniNextRef.current = data;
         if (!data.end) {
           fetchExercise(data.id);
         }
-        console.log("Setting next cviceni: " + predmet + ", " + trida + ", " + cviceni);
+        console.debug("Setting next cviceni: " + predmet + ", " + trida + ", " + cviceni);
         setNext({
           predmet: predmet,
           trida: trida,
@@ -379,7 +383,6 @@ export default function MathPractice() {
   function onDelete() {
     if (state.current !== STATE_THINKING) return;
 
-    // console.log("Clear answer");
     setAnswer(EMPTY);
   }
 
@@ -495,7 +498,7 @@ function Zadani({exercise, answer, showCorrect, showIncorrect}) {
   const deltaPerUnitLength = -2;
 
   let fontSize = exercise == null ? fontSize1 : (exercise.zadani.length - length1) * deltaPerUnitLength + fontSize1;
-  // console.debug("Zadani font-size: " + fontSize);
+  console.debug("Zadani font-size: " + fontSize);
   const neznamaHeight = fontSize + 3;
   // TODO Other dimensions should be adjusted as well: position of correct/incorrect icons, vertical position of exercise
 

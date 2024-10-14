@@ -18,8 +18,8 @@ export default function Welcome() {
   const [done, setDone] = useLocalStorage("done", JSON.stringify([]));
   const [next, setNext] = useLocalStorage("next", JSON.stringify({}));
 
-  console.log("Done: " + JSON.stringify(done));
-  console.log("Next: predmet=" + next.predmet + ", trida=" + next.trida + ", cviceni=" + next.cviceni);
+  console.debug("Done: " + JSON.stringify(done));
+  console.debug("Next: predmet=" + next.predmet + ", trida=" + next.trida + ", cviceni=" + next.cviceni);
 
   useEffect(() => {
     fetch(import.meta.env.VITE_API_BASE_URL + 'api/' + predmet + '/seznam_tridy')
@@ -27,7 +27,7 @@ export default function Welcome() {
         return res.json();
       })
       .then((data) => {
-        // console.log("Response: " + JSON.stringify(data));
+        console.debug("Data: " + JSON.stringify(data));
         setSeznamTridy(data);
         setTrida(firstLoad && next && next.hasOwnProperty('trida')
           ? next.trida
@@ -41,7 +41,7 @@ export default function Welcome() {
         return res.json();
       })
       .then((data) => {
-        // console.log("Response: " + JSON.stringify(data));
+        console.debug("Data: " + JSON.stringify(data));
         setSeznamCviceni(data);
         setCviceni((firstLoad && next && next.hasOwnProperty('cviceni')) || next.trida === trida
           ? next.cviceni
