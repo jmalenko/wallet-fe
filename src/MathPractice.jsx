@@ -44,9 +44,9 @@ export default function MathPractice() {
   let fetchAbortController;
   const cviceniNextRef = useRef();
 
-  const [log, setLog] = useLocalStorage("log", JSON.stringify([]));
-  const [done, setDone] = useLocalStorage("done", JSON.stringify([])); // Set stored as array
-  const [next, setNext] = useLocalStorage("next", JSON.stringify({})); // TODO Consider getting next from done (as the first item that's not done)
+  const [log, setLog] = useLocalStorage("log", []);
+  const [done, setDone] = useLocalStorage("done", []); // Set stored as array
+  const [next, setNext] = useLocalStorage("next", {}); // TODO Consider getting next from done (as the first item that's not done)
 
   useEffect(() => {
     fetchExercise(cviceni);
