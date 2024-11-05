@@ -41,6 +41,8 @@ export default function MathPractice() {
   let {trida} = useParams();
   let {cviceni} = useParams();
 
+  const [cviceniInfo, setCviceniInfo] = useState();
+
   let navigate = useNavigate();
   let fetchAbortController;
   const cviceniNextRef = useRef();
@@ -56,9 +58,9 @@ export default function MathPractice() {
   useEffect(() => {
     setLog(log => [...log, {
       timestamp: Date().valueOf(),
-      predmet: predmet,
-      trida: trida,
-      cviceni: cviceni,
+      predmet: cviceniInfo != null ? cviceniInfo.nazev_predmet : predmet,
+      trida: trida + (cviceniInfo != null ? ": " + cviceniInfo.nazev_trida : ""),
+      cviceni: cviceni + (cviceniInfo != null ? ": " + cviceniInfo.nazev_cviceni : ""),
       event: "Start",
       exercise: "",
       answerExpected: "",
@@ -110,9 +112,9 @@ export default function MathPractice() {
 
           setLog(log => [...log, {
             timestamp: now.valueOf(),
-            predmet: predmet,
-            trida: trida,
-            cviceni: cviceni,
+            predmet: cviceniInfo != null ? cviceniInfo.nazev_predmet : predmet,
+            trida: trida + (cviceniInfo != null ? ": " + cviceniInfo.nazev_trida : ""),
+            cviceni: cviceni + (cviceniInfo != null ? ": " + cviceniInfo.nazev_cviceni : ""),
             event: "Nový příklad",
             exercise: dataToString(data),
             answerExpected: "",
@@ -135,6 +137,17 @@ export default function MathPractice() {
         }
       })
   }
+
+  useEffect(() => {
+    fetch(import.meta.env.VITE_API_BASE_URL + 'api/' + predmet + '/info_cviceni/' + trida + '/' + cviceni)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.info("Cviceni info: " + JSON.stringify(data));
+        setCviceniInfo(data);
+      });
+  }, [cviceni]);
 
   useEffect(() => {
     exerciseNextRef.current = exerciseNext;
@@ -169,9 +182,9 @@ export default function MathPractice() {
 
       setLog(log => [...log, {
         timestamp: now.valueOf(),
-        predmet: predmet,
-        trida: trida,
-        cviceni: cviceni,
+        predmet: cviceniInfo != null ? cviceniInfo.nazev_predmet : predmet,
+        trida: trida + (cviceniInfo != null ? ": " + cviceniInfo.nazev_trida : ""),
+        cviceni: cviceni + (cviceniInfo != null ? ": " + cviceniInfo.nazev_cviceni : ""),
         event: "Odpověď",
         exercise: dataToString(exercise),
         answerExpected: exercise.zadani[Number(exercise.neznama)],
@@ -191,9 +204,9 @@ export default function MathPractice() {
 
         setLog(log => [...log, {
           timestamp: now.valueOf(),
-          predmet: predmet,
-          trida: trida,
-          cviceni: cviceni,
+          predmet: cviceniInfo != null ? cviceniInfo.nazev_predmet : predmet,
+          trida: trida + (cviceniInfo != null ? ": " + cviceniInfo.nazev_trida : ""),
+          cviceni: cviceni + (cviceniInfo != null ? ": " + cviceniInfo.nazev_cviceni : ""),
           event: "Další cvičení",
           exercise: "",
           answerExpected: "",
@@ -236,9 +249,9 @@ export default function MathPractice() {
 
           setLog(log => [...log, {
             timestamp: Date().valueOf(),
-            predmet: predmet,
-            trida: trida,
-            cviceni: cviceni,
+            predmet: cviceniInfo != null ? cviceniInfo.nazev_predmet : predmet,
+            trida: trida + (cviceniInfo != null ? ": " + cviceniInfo.nazev_trida : ""),
+            cviceni: cviceni + (cviceniInfo != null ? ": " + cviceniInfo.nazev_cviceni : ""),
             event: "Nový příklad",
             exercise: dataToString(exerciseNextRef.current),
             answerExpected: "",
@@ -260,9 +273,9 @@ export default function MathPractice() {
 
       setLog(log => [...log, {
         timestamp: now.valueOf(),
-        predmet: predmet,
-        trida: trida,
-        cviceni: cviceni,
+        predmet: cviceniInfo != null ? cviceniInfo.nazev_predmet : predmet,
+        trida: trida + (cviceniInfo != null ? ": " + cviceniInfo.nazev_trida : ""),
+        cviceni: cviceni + (cviceniInfo != null ? ": " + cviceniInfo.nazev_cviceni : ""),
         event: "Odpověď",
         exercise: dataToString(exercise),
         answerExpected: expectedAnswer,
@@ -354,9 +367,10 @@ export default function MathPractice() {
         }
         console.debug("Setting next cviceni: " + predmet + ", " + trida + ", " + cviceni);
         setNext({
-          predmet: predmet,
-          trida: trida,
-          cviceni: data.end ? cviceni : data.id,
+          predmet: cviceniInfo != null ? cviceniInfo.nazev_predmet : predmet,
+          trida: trida + (cviceniInfo != null ? ": " + cviceniInfo.nazev_trida : ""),
+          // cviceni: cviceni + (cviceniInfo != null ? ": " + cviceniInfo.nazev_cviceni : ""),
+          cviceni: data.end ? cviceni : data.id, // TODO
           end: data.end
         });
       });
@@ -393,9 +407,11 @@ export default function MathPractice() {
 
       setLog(log => [...log, {
         timestamp: Date().valueOf(),
-        predmet: predmet,
-        trida: trida,
+        predmet: cviceniInfo != null ? cviceniInfo.nazev_predmet : predmet,
+        trida: trida + (cviceniInfo != null ? ": " + cviceniInfo.nazev_trida : ""),
+        // cviceni: cviceni + (cviceniInfo != null ? ": " + cviceniInfo.nazev_cviceni : ""),
         cviceni: cviceniNextRef.current ? (cviceniNextRef.current.end ? "END" : cviceniNextRef.current.id) : (cviceni + " +1?"), // TODO Should use cviceniNextRef.current, but it's sometimes null
+        // TODO
         event: "Nový příklad",
         exercise: dataToString(exerciseNextRef.current),
         answerExpected: exerciseNextRef.current.zadani[Number(exerciseNextRef.current.neznama)],
