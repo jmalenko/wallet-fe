@@ -45,7 +45,6 @@ export default function MathPractice() {
 
   let navigate = useNavigate();
   let fetchAbortController;
-  const cviceniNextRef = useRef();
 
   const [log, setLog] = useLocalStorage("log", []);
   const [done, setDone] = useLocalStorage("done", []); // Set stored as array
@@ -195,7 +194,7 @@ export default function MathPractice() {
 
       let moveToNextLevel_ = moveToNextLevel(incorrectAnswers);
       if (moveToNextLevel_) {
-        console.log("Next level");
+        console.log("Next level: " + (cviceniInfo.next_cviceni.end ? "END" : cviceniInfo.next_cviceni.id + ": " + cviceniInfo.next_cviceni.nazev)); // TODO Check that cviceniInfo is set
 
         let el = {predmet: predmet, trida: trida, cviceni: cviceni};
         if (!doneContains(done, el)) {
@@ -207,7 +206,7 @@ export default function MathPractice() {
           predmet: cviceniInfo != null ? cviceniInfo.nazev_predmet : predmet,
           trida: trida + (cviceniInfo != null ? ": " + cviceniInfo.nazev_trida : ""),
           cviceni: cviceni + (cviceniInfo != null ? ": " + cviceniInfo.nazev_cviceni : ""),
-          event: "Další cvičení",
+          event: "Další cvičení" + (cviceniInfo.next_cviceni.end ? ", ale už je konec třídy" : ""),
           exercise: "",
           answerExpected: "",
           answerActual: "",
@@ -217,24 +216,30 @@ export default function MathPractice() {
 
         if (fetchAbortController)
           fetchAbortController.abort();
-        getNextLevel();
+
+        if (!cviceniInfo.next_cviceni.end) {
+          fetchExercise(cviceniInfo.next_cviceni.id);
+        }
+
+        setNext({
+          predmet: predmet,
+          trida: trida,
+          cviceni: cviceniInfo.next_cviceni.id,
+          end: cviceniInfo.next_cviceni.end
+        });
       }
+
 
       setTimeout(() => {
         if (moveToNextLevel_) {
           console.debug("Timeout for answer indicator");
-          if (cviceniNextRef.current != null) {
-            if (cviceniNextRef.current.end) {
-              console.info("This was the last exercise");
-              state.current = STATE_END;
-              setExerciseNext(null); // set some state variable to force rerender
-            } else {
-              navigate("/" + predmet + "/" + trida + "/" + cviceniNextRef.current.id);
-              state.current = STATE_LOADING_NEXT;
-            }
+          if (cviceniInfo.next_cviceni.end) { // Check that cviceniInfo is set
+            console.info("This was the last exercise");
+            state.current = STATE_END;
+            setExerciseNext(null); // set some state variable to force rerender
           } else {
-            console.warn("TODO");
-            // TODO may not be loaded
+            navigate("/" + predmet + "/" + trida + "/" + cviceniInfo.next_cviceni.id);
+            state.current = STATE_LOADING_NEXT;
           }
           return;
         }
@@ -353,29 +358,6 @@ export default function MathPractice() {
     return correct;
   }
 
-
-  function getNextLevel() {
-    fetch(import.meta.env.VITE_API_BASE_URL + 'api/' + predmet + '/dalsi_cviceni/' + trida + '/' + cviceni)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        console.info("Next level is: " + JSON.stringify(data));
-        cviceniNextRef.current = data;
-        if (!data.end) {
-          fetchExercise(data.id);
-        }
-        console.debug("Setting next cviceni: " + predmet + ", " + trida + ", " + cviceni);
-        setNext({
-          predmet: cviceniInfo != null ? cviceniInfo.nazev_predmet : predmet,
-          trida: trida + (cviceniInfo != null ? ": " + cviceniInfo.nazev_trida : ""),
-          // cviceni: cviceni + (cviceniInfo != null ? ": " + cviceniInfo.nazev_cviceni : ""),
-          cviceni: data.end ? cviceni : data.id, // TODO
-          end: data.end
-        });
-      });
-  }
-
   function onDelete() {
     if (state.current !== STATE_THINKING) return;
 
@@ -409,9 +391,7 @@ export default function MathPractice() {
         timestamp: Date().valueOf(),
         predmet: cviceniInfo != null ? cviceniInfo.nazev_predmet : predmet,
         trida: trida + (cviceniInfo != null ? ": " + cviceniInfo.nazev_trida : ""),
-        // cviceni: cviceni + (cviceniInfo != null ? ": " + cviceniInfo.nazev_cviceni : ""),
-        cviceni: cviceniNextRef.current ? (cviceniNextRef.current.end ? "END" : cviceniNextRef.current.id) : (cviceni + " +1?"), // TODO Should use cviceniNextRef.current, but it's sometimes null
-        // TODO
+        cviceni: cviceni + (cviceniInfo != null ? ": " + cviceniInfo.nazev_cviceni : ""),
         event: "Nový příklad",
         exercise: dataToString(exerciseNextRef.current),
         answerExpected: exerciseNextRef.current.zadani[Number(exerciseNextRef.current.neznama)],
@@ -421,7 +401,6 @@ export default function MathPractice() {
       }]);
 
       setHistory([]);
-      cviceniNextRef.current = null;
     } else {
       state.current = STATE_LOADING;
     }
@@ -504,7 +483,7 @@ export default function MathPractice() {
                    text1=""
                    text2="Nahrávám cvičení..."/>
   ) : state.current == STATE_LOADING_NEXT ? (
-    <GoToNextScreen title={cviceniNextRef.current ? cviceniNextRef.current.nazev : ""}
+    <GoToNextScreen title={cviceniInfo.next_cviceni.nazev}
                     onContinue={onContinue}/>
   ) : state.current == STATE_END ? (
     <EndScreen onRestart={onRestart} onHome={onHome}/>
