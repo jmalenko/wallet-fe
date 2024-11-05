@@ -215,37 +215,8 @@ export default function MathPractice() {
               state.current = STATE_END;
               setExerciseNext(null); // set some state variable to force rerender
             } else {
-              state.current = STATE_LOADING_NEXT;
               navigate("/" + predmet + "/" + trida + "/" + cviceniNextRef.current.id);
-              setTimeout(() => {
-                console.debug("Timeout for loading screen");
-                if (exerciseNextRef.current != null) {
-                  state.current = STATE_THINKING;
-                  setExercise(exerciseNextRef.current);
-                  setExerciseNext(null);
-                  setAnswer(EMPTY);
-                  setIncorrectAnswers([]);
-                  setTimeFrom(new Date());
-
-                  setLog(log => [...log, {
-                    timestamp: Date().valueOf(),
-                    predmet: predmet,
-                    trida: trida,
-                    cviceni: cviceniNextRef.current ? (cviceniNextRef.current.end ? "END" : cviceniNextRef.current.id) : (cviceni + " +1?"), // TODO Should use cviceniNextRef.current, but it's sometimes null
-                    event: "Nový příklad",
-                    exercise: dataToString(exerciseNextRef.current),
-                    answerExpected: exerciseNextRef.current.zadani[Number(exerciseNextRef.current.neznama)],
-                    answerActual: "",
-                    correctIndicator: "",
-                    duration: ""
-                  }]);
-
-                  setHistory([]);
-                  cviceniNextRef.current = null;
-                } else {
-                  state.current = STATE_LOADING;
-                }
-              }, INDICATOR_TIMEOUT);
+              state.current = STATE_LOADING_NEXT;
             }
           } else {
             console.warn("TODO");
@@ -274,7 +245,6 @@ export default function MathPractice() {
             correctIndicator: "",
             duration: ""
           }]);
-
         } else {
           console.debug("Loading exercise");
           state.current = STATE_LOADING;
@@ -411,6 +381,35 @@ export default function MathPractice() {
     setHistory([]);
   }
 
+  function onContinue() {
+    if (exerciseNextRef.current != null) {
+      state.current = STATE_THINKING;
+      setExercise(exerciseNextRef.current);
+      setExerciseNext(null);
+      setAnswer(EMPTY);
+      setIncorrectAnswers([]);
+      setTimeFrom(new Date());
+
+      setLog(log => [...log, {
+        timestamp: Date().valueOf(),
+        predmet: predmet,
+        trida: trida,
+        cviceni: cviceniNextRef.current ? (cviceniNextRef.current.end ? "END" : cviceniNextRef.current.id) : (cviceni + " +1?"), // TODO Should use cviceniNextRef.current, but it's sometimes null
+        event: "Nový příklad",
+        exercise: dataToString(exerciseNextRef.current),
+        answerExpected: exerciseNextRef.current.zadani[Number(exerciseNextRef.current.neznama)],
+        answerActual: "",
+        correctIndicator: "",
+        duration: ""
+      }]);
+
+      setHistory([]);
+      cviceniNextRef.current = null;
+    } else {
+      state.current = STATE_LOADING;
+    }
+  }
+
 // Message
 
   let timeout = null;
@@ -457,16 +456,15 @@ export default function MathPractice() {
       onSubmit()
   }
 
-  return [STATE_LOADING, STATE_LOADING_NEXT].includes(state.current) ? (
-    <>
-      <LoadingScreen title={cviceniNextRef.current ? cviceniNextRef.current.nazev : ""}
-                     text1={state.current == STATE_LOADING_NEXT ? "Výborně! Postupuješ na další cvičení." : ""}
-                     text2="Nahrávám cvičení..."/>
-    </>
+  return state.current == STATE_LOADING ? (
+    <LoadingScreen title=""
+                   text1=""
+                   text2="Nahrávám cvičení..."/>
+  ) : state.current == STATE_LOADING_NEXT ? (
+    <GoToNextScreen title={cviceniNextRef.current ? cviceniNextRef.current.nazev : ""}
+                    onContinue={onContinue}/>
   ) : state.current == STATE_END ? (
-    <>
-      <EndScreen onRestart={onRestart} onHome={onHome}/>
-    </>
+    <EndScreen onRestart={onRestart} onHome={onHome}/>
   ) : menuVisible ? (
     <>
       <MenuScreen onHome={onHome} cviceniCelkem={history.length} spravnychVPoslednich={countCorrectInLast()}
@@ -610,6 +608,22 @@ function LoadingScreen({title, text1, text2}) {
       <p>{text1}</p>
       <h3>{title}</h3>
       <p>{text2}</p>
+    </div>
+  );
+}
+
+function GoToNextScreen({title, onContinue}) {
+  return (
+    <div id="loading">
+      <p>Postupil jsi na další cvičení.</p>
+      <h3>{title}</h3>
+
+      <img
+        id="start"
+        className="icon"
+        onClick={onContinue}
+        src="/images/play_arrow_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg"
+        alt="Přejít na další cvičení"/>
     </div>
   );
 }
