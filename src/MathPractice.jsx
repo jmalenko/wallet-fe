@@ -442,19 +442,45 @@ export default function MathPractice() {
   }, [answer]);
 
   const onKeyDown = (event) => {
-    if (state.current !== STATE_THINKING) return;
-
-    if (isFinite(event.key)) // test for a digit
-      onAddDigit(event.key);
-    else if (event.key === "Escape")
-      onDelete()
-    else if (event.key === "Backspace")
-      setAnswer(answer.substring(0, answer.length - 1));
-    else if (import.meta.env.DEV && event.key === "a") {
-      const expectedAnswer = String(exercise.zadani[Number(exercise.neznama)]);
-      setAnswer(expectedAnswer);
-    } else if (event.key === "Enter")
-      onSubmit()
+    switch (state.current) {
+      case STATE_THINKING:
+        switch (event.key) {
+          case "Escape":
+            onDelete()
+            break;
+          case "Backspace":
+            setAnswer(answer.substring(0, answer.length - 1));
+            break;
+          case "a":
+            if (import.meta.env.DEV) {
+              const expectedAnswer = String(exercise.zadani[Number(exercise.neznama)]);
+              setAnswer(expectedAnswer);
+            }
+            break;
+          case "Enter":
+            onSubmit()
+            break;
+          default:
+            if (isFinite(event.key)) // test for a digit
+              onAddDigit(event.key);
+            break;
+        }
+        break;
+      case STATE_LOADING_NEXT:
+        switch (event.key) {
+          case "Enter":
+            onContinue();
+            break;
+        }
+        break;
+      case STATE_END:
+        switch (event.key) {
+          case "Enter":
+            onRestart();
+            break;
+        }
+        break;
+    }
   }
 
   return state.current == STATE_LOADING ? (
