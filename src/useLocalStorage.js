@@ -1,7 +1,10 @@
-import { useState, useEffect } from "react";
+// Source: https://blog.logrocket.com/using-localstorage-react-hooks/
 
 // To remove:
 // localStorage.removeItem(key);
+// localStorage.clear();
+
+import { useState, useEffect } from "react";
 
 function getStorageValue(key, defaultValue) {
   const saved = localStorage.getItem(key);

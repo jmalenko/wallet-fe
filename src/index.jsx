@@ -5,6 +5,7 @@ import MathPractice from './MathPractice.jsx'
 import Welcome from './Welcome'
 import App from "./App.jsx";
 import ErrorPage from "./ErrorPage.jsx";
+import Administration from "./Administration.jsx";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,9 @@ const router = createBrowserRouter([
       }, {
         path: "matematika/:trida/:cviceni",
         element: <MathPractice/>,
+      }, {
+        path: "admin",
+        element: <Administration/>,
       },
     ],
   },
@@ -25,6 +29,6 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   // <React.StrictMode>
-    <RouterProvider router={router}/>
+  <RouterProvider router={router}/>
   // </React.StrictMode>
 )

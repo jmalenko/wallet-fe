@@ -137,35 +137,40 @@ main {
 #menuScreen {
   font-size: 2.7vw;
 }
-
-#menuScreen #state {
+#menuScreen :first-child {
   margin-top: 13vw;
 }
 #menuScreen #state p {
   margin: 1ex;
 }
 
-#menuScreen #history {
+#history {
   margin-top: 4vw;
   font-size: 1.6vw;
   border-collapse: collapse;
 }
-#menuScreen #history th {
+#history th {
   position: sticky;
   background: white;
   top: 0;
 }
-#menuScreen #history, #menuScreen #history th, #menuScreen #history td {
+#history, #history th, #history td {
   border: 1px solid;
   padding: 0 0.3em;
 }
-#menuScreen #history .cell-highlight-start {
+#history .cell-highlight-start {
   background-color: #ddd;
 }
-#menuScreen #history .cell-highlight-incorrect {
+#history .cell-highlight-incorrect {
   background-color: #fcaeae;
 }
 
+#admin {
+  font-size: 2.7vw;
+}
+#admin :first-child {
+  margin-top: 13vw;
+}
 
 @media not screen and (orientation: portrait) and (max-width: 800px) {
   main {
