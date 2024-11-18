@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from "react";
 import {useNavigate, useParams} from 'react-router-dom';
 import {useLocalStorage} from "./useLocalStorage";
-import {doneContains} from "./shared.js";
+import {doneContains, dataToString} from "./shared.js";
 import Log from "./Log.jsx";
 
 export default function MathPractice() {
@@ -304,17 +304,6 @@ export default function MathPractice() {
     let actualAnswer = Number(answer);
     let correct = expectedAnswer === actualAnswer;
     return correct
-  }
-
-  function dataToString(data) {
-    const n = Number(data.neznama);
-    let zadaniStr = "";
-    for (let i = 0; i < data.zadani.length; i++) {
-      if (i)
-        zadaniStr += " ";
-      zadaniStr += i === n ? "…" : data.zadani[i];
-    }
-    return zadaniStr;
   }
 
   function moveToNextLevel(incorrectAnswersCurrent) {

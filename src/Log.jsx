@@ -1,7 +1,7 @@
 export default function Log({log}) {
 
   return (
-    <table id="history">
+    <table id="history" className="mytablestyle">
       <thead>
       <tr>
         <th>Čas</th>

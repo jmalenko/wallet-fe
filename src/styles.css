@@ -137,7 +137,7 @@ main {
 #menuScreen {
   font-size: 2.7vw;
 }
-#menuScreen :first-child {
+#menuScreen > :first-child {
   margin-top: 13vw;
 }
 #menuScreen #state p {
@@ -146,30 +146,44 @@ main {
 
 #history {
   margin-top: 4vw;
+}
+
+.mytablestyle {
   font-size: 1.6vw;
   border-collapse: collapse;
 }
-#history th {
+.mytablestyle th {
   position: sticky;
   background: white;
   top: 0;
 }
-#history, #history th, #history td {
+.mytablestyle, .mytablestyle th, .mytablestyle td {
   border: 1px solid;
   padding: 0 0.3em;
 }
-#history .cell-highlight-start {
+.mytablestyle .cell-highlight-start {
   background-color: #ddd;
 }
-#history .cell-highlight-incorrect {
+.mytablestyle .cell-highlight-incorrect {
   background-color: #fcaeae;
 }
 
 #admin {
   font-size: 2.7vw;
 }
-#admin :first-child {
+#admin > :first-child {
   margin-top: 13vw;
+}
+
+#print {
+  font-size: 1ex;
+}
+#print h1 {
+  font-size: 120%;
+  margin-bottom: 2ex;
+}
+#print div {
+  margin-top: 1.6ex;
 }
 
 @media not screen and (orientation: portrait) and (max-width: 800px) {

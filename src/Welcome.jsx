@@ -71,7 +71,7 @@ export default function Welcome() {
           <td><label>Předmět:</label></td>
           <td>
             <select id="predmet" className="empty" disabled>
-              <option value="math">Matematika</option>
+              <option value="matematika">Matematika</option>
             </select>
           </td>
         </tr>
