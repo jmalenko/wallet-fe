@@ -1,1 +1,1 @@
-## Frontend for matematika
+## Frontend for Wallet app

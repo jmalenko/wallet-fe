@@ -1,12 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import {createBrowserRouter, RouterProvider, Outlet} from "react-router-dom"
-import MathPractice from './MathPractice.jsx'
-import MathPracticePrint from './MathPracticePrint.jsx'
+import {createBrowserRouter, RouterProvider} from "react-router-dom"
 import Welcome from './Welcome'
 import App from "./App.jsx";
 import ErrorPage from "./ErrorPage.jsx";
-import Administration from "./Administration.jsx";
+import UserDetail from "./UserDetail.jsx";
+import AccountDetail from "./AccountDetail.jsx";
 
 const router = createBrowserRouter([
   {
@@ -18,14 +17,23 @@ const router = createBrowserRouter([
         index: true,
         element: <Welcome/>,
       }, {
-        path: "matematika/:trida/:cviceni",
-        element: <MathPractice/>,
+        path: "createUser",
+        element: <Welcome/>,
       }, {
-        path: "matematika/:trida/:cviceni/print",
-        element: <MathPracticePrint/>,
+        path: "user/:userId",
+        element: <UserDetail/>,
       }, {
-        path: "admin",
-        element: <Administration/>,
+        path: "account/:accountId",
+        element: <AccountDetail/>,
+      }, {
+        path: "deposit/:accountId",
+        element: <Welcome/>,
+      }, {
+        path: "withdrawal/:accountId",
+        element: <Welcome/>,
+      }, {
+        path: "transfer/:accountId",
+        element: <Welcome/>,
       },
     ],
   },

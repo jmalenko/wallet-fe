@@ -2,7 +2,7 @@
   "name": "malematika-fe",
   "version": "1.0.0",
   "type": "module",
-  "description": "Cviceni z matematiky",
+  "description": "Wallet",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
