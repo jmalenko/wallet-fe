@@ -14,7 +14,10 @@ export default function Welcome() {
         .then((data) => {
           // console.debug("Data: " + JSON.stringify(data));
           setUsers(data);
-      });
+        })
+        .catch(reason => {
+          console.error("Error: " + reason);
+        });
     } catch (error) {
       // FUTURE Handle errors better in the entire app
       console.error("Error: " + error.message);
@@ -51,15 +54,15 @@ export default function Welcome() {
         </tr>
         </thead>
         <tbody>
-          {users && users.map(user => {
-            return (
-              <tr key={user.id}>
-                <td>
-                  <Link to={`/user/${user.id}`}>{user.name}</Link>
-                </td>
-              </tr>
-            )
-          })}
+        {users && users.map(user => {
+          return (
+            <tr key={user.id}>
+              <td>
+                <Link to={`/user/${user.id}`}>{user.name}</Link>
+              </td>
+            </tr>
+          )
+        })}
         </tbody>
       </table>
 

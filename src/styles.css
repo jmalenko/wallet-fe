@@ -1,3 +1,56 @@
 th, td {
   border: 1px solid;
 }
+
+form {
+  background-color: white;
+  padding: 20px;
+  max-width: 500px;
+  margin: 50px auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.form-item p {
+  color: red;
+}
+
+label {
+  width: 11em;
+  font-size: 16px;
+  color: #333;
+}
+
+input[type="text"] {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+input[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+input[type="submit"]:active {
+  background-color: #004494;
+}

@@ -1,13 +1,13 @@
 import {useState, useEffect} from "react";
-import {useParams} from 'react-router-dom';
+import {useParams, useNavigate, Link} from 'react-router-dom';
 import {amountToString} from "./shared.js";
 
 export default function AccountDetail() {
   let {accountId} = useParams();
   const [accountInfo, setAccountInfo] = useState();
-  const [balance, setBalance] = useState();
   const [transactions, setTransactions] = useState();
   const [dailyBalances, setDailyBalances] = useState();
+  let navigate = useNavigate();
 
   useEffect(() => {
     try {
@@ -67,9 +67,11 @@ export default function AccountDetail() {
   }
 
   function onSendExternal() {
+    navigate("/withdraw/" + accountId)
   }
 
   function onSendInternal() {
+    navigate("/transfer/" + accountId)
   }
 
   return (
@@ -98,10 +100,10 @@ export default function AccountDetail() {
       </table>
 
       <br/>
-      <button onClick={onReceiveExternal}>Receive money from external account</button>
+      <button onClick={onReceiveExternal}>Deposit money from external account</button>
       <br/>
       <br/>
-      <button onClick={onSendExternal}>Send money to external account</button>
+      <button onClick={onSendExternal}>Withdraw money to external account</button>
       <br/>
       <br/>
       <button onClick={onSendInternal}>Send money to an account (that can be owned by another user)</button>
