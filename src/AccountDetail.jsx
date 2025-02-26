@@ -67,11 +67,11 @@ export default function AccountDetail() {
   }
 
   function onSendExternal() {
-    navigate("/withdraw/" + accountId)
+    navigate("/transfer/" + accountId + "/external")
   }
 
   function onSendInternal() {
-    navigate("/transfer/" + accountId)
+    navigate("/transfer/" + accountId + "/internal")
   }
 
   return (

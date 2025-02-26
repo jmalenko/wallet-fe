@@ -7,7 +7,6 @@ import ErrorPage from "./ErrorPage.jsx";
 import UserDetail from "./UserDetail.jsx";
 import AccountDetail from "./AccountDetail.jsx";
 import Transfer from "./Transfer.jsx";
-import Withdraw from "./Withdraw.jsx";
 
 const router = createBrowserRouter([
   {
@@ -28,10 +27,7 @@ const router = createBrowserRouter([
         path: "account/:accountId",
         element: <AccountDetail/>,
       }, {
-        path: "withdraw/:accountId",
-        element: <Withdraw/>,
-      }, {
-        path: "transfer/:accountId",
+        path: "transfer/:accountId/:type",
         element: <Transfer/>,
       },
     ],
