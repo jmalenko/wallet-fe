@@ -32,7 +32,6 @@ export default function Welcome() {
           navigate("/user/" + data.id)
         });
     } catch (error) {
-      // FUTURE Handle errors better in the entire app
       console.error("Error: " + error.message);
     }
   }

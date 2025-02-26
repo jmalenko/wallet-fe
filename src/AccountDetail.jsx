@@ -1,5 +1,6 @@
 import {useState, useEffect} from "react";
 import {useParams} from 'react-router-dom';
+import {amountToString} from "./shared.js";
 
 export default function AccountDetail() {
   let {accountId} = useParams();
@@ -50,6 +51,27 @@ export default function AccountDetail() {
     }
   }, []);
 
+  function onReceiveExternal() {
+    try {
+      fetch(import.meta.env.VITE_API_BASE_URL + 'receiveExternal/' + accountId)
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          alert("You received " + amountToString(data.amount) + " " + accountInfo?.currency + ". Let's reload the page.")
+          window.location.reload();
+        });
+    } catch (error) {
+      console.error("Error: " + error.message);
+    }
+  }
+
+  function onSendExternal() {
+  }
+
+  function onSendInternal() {
+  }
+
   return (
     <main>
       <h1>Account detail</h1>
@@ -74,6 +96,15 @@ export default function AccountDetail() {
         </tr>
         </tbody>
       </table>
+
+      <br/>
+      <button onClick={onReceiveExternal}>Receive money from external account</button>
+      <br/>
+      <br/>
+      <button onClick={onSendExternal}>Send money to external account</button>
+      <br/>
+      <br/>
+      <button onClick={onSendInternal}>Send money to an account (that can be owned by another user)</button>
 
       <h2>Transactions</h2>
 
@@ -139,11 +170,7 @@ export default function AccountDetail() {
 }
 
 function Amount({amount}) {
-  // Proper formatting
-  var real = amount.whole + amount.decimal / 100;
-  var text = (real).toLocaleString(undefined, {minimumFractionDigits: 2});
-
   return (
-    <div>{text}</div>
+    <div>{amountToString(amount)}</div>
   );
 }
