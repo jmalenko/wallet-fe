@@ -1,8 +1,9 @@
 import {useState, useEffect} from "react";
-import {Link} from "react-router-dom";
+import {useNavigate, Link} from "react-router-dom";
 
 export default function Welcome() {
   const [users, setUsers] = useState();
+  let navigate = useNavigate();
 
   useEffect(() => {
     try {
@@ -21,7 +22,19 @@ export default function Welcome() {
   }, []);
 
   function onCreateUser() {
-    navigate("/createUser")
+    try {
+      fetch(import.meta.env.VITE_API_BASE_URL + 'createUser')
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          alert("User created with id " + data.id + ". Let's navigate to the user detail.")
+          navigate("/user/" + data.id)
+        });
+    } catch (error) {
+      // FUTURE Handle errors better in the entire app
+      console.error("Error: " + error.message);
+    }
   }
 
   return (
@@ -51,6 +64,7 @@ export default function Welcome() {
         </tbody>
       </table>
 
+      <br/>
       <button onClick={onCreateUser}>Create a new user</button>
     </main>
   )

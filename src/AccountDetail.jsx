@@ -87,17 +87,23 @@ export default function AccountDetail() {
         </tr>
         </thead>
         <tbody>
-        {transactions && transactions.map(transaction => {
-          let counterpartyText = transaction.counterpartyAccount.id ? "internal " + transaction.counterpartyAccount.id : "external " + transaction.counterpartyAccount;
-          return (
-            <tr key={transaction.id}>
-              <td>{transaction.created}</td>
-              <td>{transaction['reference']}</td>
-              <td>{counterpartyText}</td>
-              <td><Amount amount={transaction.amount}/></td>
-            </tr>
-          )
-        })}
+        {transactions && (0 < transactions.length ?
+            transactions.map(transaction => {
+              let counterpartyText = transaction.counterpartyAccount.id ? "internal " + transaction.counterpartyAccount.id : "external " + transaction.counterpartyAccount;
+              return (
+                <tr key={transaction.id}>
+                  <td>{transaction.created}</td>
+                  <td>{transaction['reference']}</td>
+                  <td>{counterpartyText}</td>
+                  <td><Amount amount={transaction.amount}/></td>
+                </tr>
+              )
+            })
+            :
+            (
+              <p>No data.</p>
+            )
+        )}
         </tbody>
       </table>
 
@@ -112,14 +118,20 @@ export default function AccountDetail() {
         </tr>
         </thead>
         <tbody>
-        {dailyBalances && dailyBalances.map(dailyBalance => {
-          return (
-            <tr key={dailyBalance.date}>
-              <td>{dailyBalance.date}</td>
-              <td><Amount amount={dailyBalance.amount}/></td>
-            </tr>
-          )
-        })}
+        {dailyBalances && (0 < dailyBalances.length ?
+            dailyBalances.map(dailyBalance => {
+              return (
+                <tr key={dailyBalance.date}>
+                  <td>{dailyBalance.date}</td>
+                  <td><Amount amount={dailyBalance.amount}/></td>
+                </tr>
+              )
+            })
+            :
+            (
+              <p>No data.</p>
+            )
+        )}
         </tbody>
       </table>
     </main>
