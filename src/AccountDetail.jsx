@@ -155,7 +155,7 @@ export default function AccountDetail() {
             dailyBalances.map(dailyBalance => {
               return (
                 <tr key={dailyBalance.date}>
-                  <td>{dailyBalance.date}</td>
+                  <td>{dailyBalance.date.substring(0, 10)}</td>
                   <td><Amount amount={dailyBalance.amount}/></td>
                 </tr>
               )
