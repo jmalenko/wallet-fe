@@ -11,7 +11,7 @@ export default function AccountDetail() {
 
   useEffect(() => {
     try {
-      fetch(import.meta.env.VITE_API_BASE_URL + 'getAccountInfo/' + accountId)
+      fetch('http://localhost:8080/wallet/' + 'getAccountInfo/' + accountId)
         .then((res) => {
           return res.json();
         })
@@ -25,7 +25,7 @@ export default function AccountDetail() {
 
   useEffect(() => {
     try {
-      fetch(import.meta.env.VITE_API_BASE_URL + 'getTransactions/' + accountId)
+      fetch('http://localhost:8080/wallet/' + 'getTransactions/' + accountId)
         .then((res) => {
           return res.json();
         })
@@ -39,7 +39,7 @@ export default function AccountDetail() {
 
   useEffect(() => {
     try {
-      fetch(import.meta.env.VITE_API_BASE_URL + 'getDailyBalances/' + accountId)
+      fetch('http://localhost:8080/wallet/' + 'getDailyBalances/' + accountId)
         .then((res) => {
           return res.json();
         })
@@ -53,7 +53,7 @@ export default function AccountDetail() {
 
   function onReceiveExternal() {
     try {
-      fetch(import.meta.env.VITE_API_BASE_URL + 'receiveExternal/' + accountId)
+      fetch('http://localhost:8080/wallet/' + 'receiveExternal/' + accountId)
         .then((res) => {
           return res.json();
         })

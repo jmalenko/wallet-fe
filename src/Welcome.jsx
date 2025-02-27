@@ -7,7 +7,7 @@ export default function Welcome() {
 
   useEffect(() => {
     try {
-      fetch(import.meta.env.VITE_API_BASE_URL + 'getUsers')
+      fetch('http://localhost:8080/wallet/' + 'getUsers')
         .then((res) => {
           return res.json();
         })
@@ -26,7 +26,7 @@ export default function Welcome() {
 
   function onCreateUser() {
     try {
-      fetch(import.meta.env.VITE_API_BASE_URL + 'createUser')
+      fetch('http://localhost:8080/wallet/' + 'createUser')
         .then((res) => {
           return res.json();
         })

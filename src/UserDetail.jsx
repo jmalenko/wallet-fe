@@ -8,7 +8,7 @@ export default function UserDetail() {
 
   useEffect(() => {
     try {
-      fetch(import.meta.env.VITE_API_BASE_URL + 'getAccounts/' + userId)
+      fetch('http://localhost:8080/wallet/' + 'getAccounts/' + userId)
         .then((res) => {
           return res.json();
         })
