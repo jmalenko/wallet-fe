@@ -58,7 +58,7 @@ export default function Transfer() {
       var resultStatus;
       try {
         let amount = numberToAmount(formData.amount);
-        fetch('http://localhost:8080/wallet/' + endPoint + '/' + accountId + '/' + encodeURIComponent(formData.counterpartyAccountId) + '/' + amount.whole + '/' + amount.decimal + '/' + encodeURIComponent(formData.reference))
+        fetch(import.meta.env.VITE_API_BASE_URL + endPoint + '/' + accountId + '/' + encodeURIComponent(formData.counterpartyAccountId) + '/' + amount.whole + '/' + amount.decimal + '/' + encodeURIComponent(formData.reference))
           .then((res) => {
             resultStatus = res.status;
             return res.json();
