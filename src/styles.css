@@ -2,6 +2,15 @@ th, td {
   border: 1px solid;
 }
 
+.loading {
+  color: blue;
+}
+
+.error {
+  color: red;
+}
+
+
 form {
   background-color: white;
   padding: 20px;

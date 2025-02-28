@@ -1,28 +1,9 @@
-import {useState, useEffect} from "react";
 import {useNavigate, Link} from "react-router-dom";
+import useFetch from './useFetch.js';
 
 export default function Welcome() {
-  const [users, setUsers] = useState();
+  const {data, loading, error} = useFetch(import.meta.env.VITE_API_BASE_URL + 'getUsers');
   let navigate = useNavigate();
-
-  useEffect(() => {
-    try {
-      fetch(import.meta.env.VITE_API_BASE_URL + 'getUsers')
-        .then((res) => {
-          return res.json();
-        })
-        .then((data) => {
-          // console.debug("Data: " + JSON.stringify(data));
-          setUsers(data);
-        })
-        .catch(reason => {
-          console.error("Error: " + reason);
-        });
-    } catch (error) {
-      // FUTURE Handle errors better in the entire app
-      console.error("Error: " + error.message);
-    }
-  }, []);
 
   function onCreateUser() {
     try {
@@ -45,26 +26,30 @@ export default function Welcome() {
 
       <h2>Users</h2>
 
-      <p>Instead of a proper user management (with user creation and logging in), just select a user you want to become or create a new user.</p>
+      <p><em>Instead of a proper user management (with user creation and logging in), just select a user you want to become or create a new user.</em></p>
 
-      <table>
-        <thead>
-        <tr>
-          <th>User name</th>
-        </tr>
-        </thead>
-        <tbody>
-        {users && users.map(user => {
-          return (
-            <tr key={user.id}>
-              <td>
-                <Link to={`/user/${user.id}`}>{user.name}</Link>
-              </td>
-            </tr>
-          )
-        })}
-        </tbody>
-      </table>
+      {loading && <p className="loading">List of users is loading...</p>}
+      {error && <p className="error">Error: {error.message}</p>}
+      {data && (
+        <table>
+          <thead>
+          <tr>
+            <th>User name</th>
+          </tr>
+          </thead>
+          <tbody>
+          {data.map(user => {
+            return (
+              <tr key={user.id}>
+                <td>
+                  <Link to={`/user/${user.id}`}>X {user.name}</Link>
+                </td>
+              </tr>
+            )
+          })}
+          </tbody>
+        </table>
+      )}
 
       <br/>
       <button onClick={onCreateUser}>Create a new user</button>
