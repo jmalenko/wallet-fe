@@ -1,24 +1,22 @@
 import {useNavigate, Link} from "react-router-dom";
 import useFetch from './useFetch.js';
+import {useEffect} from "react";
 
 export default function Welcome() {
-  const {data, loading, error} = useFetch(import.meta.env.VITE_API_BASE_URL + 'getUsers');
+  const {myFetch, data, loading, error} = useFetch(import.meta.env.VITE_API_BASE_URL + 'getUsers');
+  const {myFetch: myFetchCreateUser, data: dataCreateUser, loading: loadingCreateUser, error: errorCreateUser} =
+    useFetch(import.meta.env.VITE_API_BASE_URL + 'createUser', true);
   let navigate = useNavigate();
 
   function onCreateUser() {
-    try {
-      fetch(import.meta.env.VITE_API_BASE_URL + 'createUser')
-        .then((res) => {
-          return res.json();
-        })
-        .then((data) => {
-          alert("User created with id " + data.id + ". Let's navigate to the user detail.")
-          navigate("/user/" + data.id)
-        });
-    } catch (error) {
-      console.error("Error: " + error.message);
-    }
+    myFetchCreateUser()
   }
+
+  useEffect(() => {
+    if (dataCreateUser) {
+      myFetch();
+    }
+  }, [dataCreateUser])
 
   return (
     <main>
@@ -30,7 +28,7 @@ export default function Welcome() {
 
       {loading && <p className="loading">List of users is loading...</p>}
       {error && <p className="error">Error: {error.message}</p>}
-      {data && (
+      {data &&
         <table>
           <thead>
           <tr>
@@ -42,17 +40,24 @@ export default function Welcome() {
             return (
               <tr key={user.id}>
                 <td>
-                  <Link to={`/user/${user.id}`}>X {user.name}</Link>
+                  <Link to={`/user/${user.id}`}>{user.name}</Link>
                 </td>
               </tr>
             )
           })}
           </tbody>
         </table>
-      )}
+      }
 
       <br/>
       <button onClick={onCreateUser}>Create a new user</button>
+      {loadingCreateUser && <p className="loading">Creating a new user...</p>}
+      {errorCreateUser && <p className="error">Error: {errorCreateUser.message}</p>}
+      {dataCreateUser &&
+        <p>
+          User created with name <Link to={`/user/${dataCreateUser.id}`}>{dataCreateUser.name}</Link>.
+        </p>
+      }
     </main>
   )
 }

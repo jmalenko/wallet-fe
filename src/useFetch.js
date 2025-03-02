@@ -1,12 +1,12 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import axios from 'axios';
 
-function useFetch(url) {
+export default function useFetch(url, disableFetchOnMount = false) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  const myFetch = useCallback(() => {
     setLoading(true)
     setData(null);
     setError(null);
@@ -23,12 +23,12 @@ function useFetch(url) {
         setLoading(false)
         setError(err)
       })
-    return () => {
-      source.cancel();
-    }
-  }, [url])
+  }, [url]);
 
-  return {data, loading, error}
+  useEffect(() => {
+    if (disableFetchOnMount) return;
+    myFetch()
+  }, [myFetch, disableFetchOnMount])
+
+  return {myFetch, data, loading, error}
 }
-
-export default useFetch;
